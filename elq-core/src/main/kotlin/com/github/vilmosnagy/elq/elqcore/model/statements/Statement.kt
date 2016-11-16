@@ -3,7 +3,7 @@ package com.github.vilmosnagy.elq.elqcore.model.statements
 import com.github.vilmosnagy.elq.elqcore.model.statements.branch.CompareType
 
 /**
- * @author Vilmos Nagy <vilmos.nagy@outlook.com>
+ * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
 interface Statement {
 

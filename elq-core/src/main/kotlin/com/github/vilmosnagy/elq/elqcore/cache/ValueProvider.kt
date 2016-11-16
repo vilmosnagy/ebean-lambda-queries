@@ -1,7 +1,7 @@
 package com.github.vilmosnagy.elq.elqcore.cache
 
 /**
- * @author Vilmos Nagy <vilmos.nagy@outlook.com>
+ * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
 interface ValueProvider<T> {
 

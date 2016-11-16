@@ -1,7 +1,7 @@
 package com.github.vilmosnagy.elq.elqcore.model.statements
 
 /**
- * @author Vilmos Nagy <vilmos.nagy@outlook.com>
+ * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
 class GetFieldStatement(
         val javaClass: Class<*>,

@@ -24,7 +24,7 @@ cache:
     - gradle/wrapper/
 
 script:
-  - ./gradlew check jacocoTestReport codeCoverageReport -PebeanVersion=$EBEAN_VERSION
+  - ./gradlew check jacocoTestReport codeCoverageReport -PebeanVersion=$EBEAN_VERSION -PdoNotRelease=true
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)

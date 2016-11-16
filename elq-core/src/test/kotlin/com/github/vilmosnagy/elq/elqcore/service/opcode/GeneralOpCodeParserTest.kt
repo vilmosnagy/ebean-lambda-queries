@@ -26,7 +26,7 @@ import java.lang.Boolean as JavaBoolean
 import java.lang.reflect.Method as JVMMethod
 
 /**
- * @author Vilmos Nagy <vilmos.nagy@outlook.com>
+ * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
 class GeneralOpCodeParserTest : FeatureSpec() {
 

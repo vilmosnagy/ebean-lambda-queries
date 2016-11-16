@@ -23,7 +23,7 @@ import java.lang.Short
 import java.util.*
 
 /**
- * @author Vilmos Nagy <vilmos.nagy@outlook.com>
+ * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
 class InvokeOpCodeParserTest : FeatureSpec() {
 

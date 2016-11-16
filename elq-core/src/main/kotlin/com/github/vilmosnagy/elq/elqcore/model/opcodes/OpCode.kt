@@ -6,7 +6,7 @@ import com.github.vilmosnagy.elq.elqcore.includedArgs
 import com.github.vilmosnagy.elq.elqcore.model.statements.branch.CompareType
 
 /**
- * @author Vilmos Nagy <vilmos.nagy@outlook.com>
+ * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
 sealed class OpCode(val type: OpCodeType): EqualsAndHashCode() {
 

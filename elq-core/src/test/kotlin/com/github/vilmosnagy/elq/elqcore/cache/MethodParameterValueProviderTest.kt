@@ -7,7 +7,7 @@ import org.mockito.InjectMocks
 import org.mockito.MockitoAnnotations
 
 /**
- * @author Vilmos Nagy <vilmos.nagy@outlook.com>
+ * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
 class MethodParameterValueProviderTest : FeatureSpec() {
 

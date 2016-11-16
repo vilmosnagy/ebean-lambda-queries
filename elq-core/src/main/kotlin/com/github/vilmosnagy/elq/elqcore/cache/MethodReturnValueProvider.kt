@@ -3,7 +3,7 @@ package com.github.vilmosnagy.elq.elqcore.cache
 import java.lang.reflect.Method as JVMMethod
 
 /**
- * @author Vilmos Nagy <vilmos.nagy@outlook.com>
+ * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
 data class MethodReturnValueProvider<T> (
         private val targetMethod: JVMMethod,

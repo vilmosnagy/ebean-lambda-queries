@@ -3,7 +3,7 @@ package com.github.vilmosnagy.elq.elqcore.model.statements.branch
 import com.github.vilmosnagy.elq.elqcore.model.statements.Statement
 
 /**
- * @author Vilmos Nagy <vilmos.nagy@outlook.com>
+ * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
 data class BranchedStatement(
         val compareStatement: CompareStatement,

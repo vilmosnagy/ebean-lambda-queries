@@ -9,7 +9,7 @@ import com.github.vilmosnagy.elq.elqcore.model.statements.branch.CompareType
 import com.github.vilmosnagy.elq.elqcore.service.opcode.callhandlers.MethodCallHandler.MethodCall
 
 /**
- * @author Vilmos Nagy <vilmos.nagy@outlook.com>
+ * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
 class JavaObjectEqualsMethodCallHandler : MethodCallHandler {
 

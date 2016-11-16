@@ -4,7 +4,7 @@ import com.github.vilmosnagy.elq.elqcore.interfaces.Predicate;
 import com.github.vilmosnagy.elq.elqcore.test.model.TestEntity;
 
 /**
- * @author Vilmos Nagy <vilmos.nagy@outlook.com>
+ * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
 public class FunctionAlbumIdEqualsFive implements Predicate<TestEntity> {
     @Override

@@ -14,7 +14,7 @@ import org.apache.bcel.classfile.Method as BCELMethod
 import java.lang.reflect.Method as JVMMethod
 
 /**
- * @author Vilmos Nagy <vilmos.nagy@outlook.com>
+ * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
 @Singleton
 open class GeneralOpCodeParser @Inject constructor(

@@ -6,7 +6,7 @@ import com.github.vilmosnagy.elq.elqcore.model.statements.Statement
 import java.lang.reflect.Method
 
 /**
- * @author Vilmos Nagy <vilmos.nagy@outlook.com>
+ * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
 interface MethodCallHandler {
 

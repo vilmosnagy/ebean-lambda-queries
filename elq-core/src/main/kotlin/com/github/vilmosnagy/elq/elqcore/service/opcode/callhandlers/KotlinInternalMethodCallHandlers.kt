@@ -12,7 +12,7 @@ import com.github.vilmosnagy.elq.elqcore.service.opcode.callhandlers.MethodCallH
 import kotlin.jvm.internal.Intrinsics
 
 /**
- * @author Vilmos Nagy <vilmos.nagy@outlook.com>
+ * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
 class KotlinInternalEqualsMethodCallHandler : MethodCallHandler {
 

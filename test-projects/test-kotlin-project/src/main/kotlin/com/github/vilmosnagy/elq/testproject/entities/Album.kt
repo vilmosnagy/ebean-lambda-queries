@@ -4,7 +4,7 @@ import java.util.*
 import javax.persistence.*
 
 /**
- * @author Vilmos Nagy <vilmos.nagy@outlook.com>
+ * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
 @Entity
 @Table(name = "Album")

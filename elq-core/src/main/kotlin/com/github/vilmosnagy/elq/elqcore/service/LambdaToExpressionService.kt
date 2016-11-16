@@ -18,7 +18,7 @@ import javax.inject.Singleton
 import java.lang.reflect.Method as JVMMethod
 
 /**
- * @author Vilmos Nagy <vilmos.nagy@outlook.com>
+ * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
 @Singleton
 class LambdaToExpressionService

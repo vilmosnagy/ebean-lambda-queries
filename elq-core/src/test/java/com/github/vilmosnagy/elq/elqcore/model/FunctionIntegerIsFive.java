@@ -5,7 +5,7 @@ import kotlin.jvm.functions.Function1;
 import java.util.function.Function;
 
 /**
- * @author Vilmos Nagy <vilmos.nagy@outlook.com>
+ * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
 public class FunctionIntegerIsFive implements Function1<Integer, Boolean> {
 

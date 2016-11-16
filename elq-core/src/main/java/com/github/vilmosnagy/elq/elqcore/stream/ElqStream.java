@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.stream.Collector;
 
 /**
- * @author Vilmos Nagy <vilmos.nagy@outlook.com>
+ * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
 public interface ElqStream<T> {
 

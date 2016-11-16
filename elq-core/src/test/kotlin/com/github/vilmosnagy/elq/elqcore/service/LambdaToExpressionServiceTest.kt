@@ -24,7 +24,7 @@ import org.mockito.MockitoAnnotations
 import java.util.*
 
 /**
- * @author Vilmos Nagy <vilmos.nagy@outlook.com>
+ * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
 class LambdaToExpressionServiceTest : FeatureSpec() {
 

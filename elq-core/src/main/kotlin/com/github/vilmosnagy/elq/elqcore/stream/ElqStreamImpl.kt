@@ -7,7 +7,7 @@ import com.github.vilmosnagy.elq.elqcore.interfaces.Predicate
 import java.util.stream.Collector
 
 /**
- * @author Vilmos Nagy <vilmos.nagy@outlook.com>
+ * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
 data class ElqStreamImpl<T>  private constructor(
         private val clazz: Class<T>,

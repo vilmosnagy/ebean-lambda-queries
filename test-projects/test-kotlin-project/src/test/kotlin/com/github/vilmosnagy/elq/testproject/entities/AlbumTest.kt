@@ -11,7 +11,7 @@ import java.lang.String
 import java.util.stream.Collectors
 
 /**
- * @author Vilmos Nagy <vilmos.nagy@outlook.com>
+ * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
 class AlbumTest: BaseTest() {
 

@@ -11,7 +11,7 @@ import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 
 /**
- * @author Vilmos Nagy <vilmos.nagy@outlook.com>
+ * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
 class MethodCallStatementTest: FeatureSpec() {
 

@@ -7,7 +7,7 @@ import net.sf.cglib.proxy.Enhancer
 import java.lang.reflect.Method as JVMMethod
 
 /**
- * @author Vilmos Nagy <vilmos.nagy@outlook.com>
+ * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
 data class MethodParameterValueProvider<T>(internal val variableIndex: Int, internal val propertyCallChain: List<JVMMethod>): ValueProvider<Predicate<T>> {
 

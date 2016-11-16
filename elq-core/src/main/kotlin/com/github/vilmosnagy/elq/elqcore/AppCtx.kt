@@ -8,7 +8,7 @@ import javax.inject.Singleton
 
 
 /**
- * @author Vilmos Nagy <vilmos.nagy@outlook.com>
+ * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
 @Singleton
 @Component

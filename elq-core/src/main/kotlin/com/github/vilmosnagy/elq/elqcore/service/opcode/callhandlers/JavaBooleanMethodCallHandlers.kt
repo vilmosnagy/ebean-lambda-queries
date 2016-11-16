@@ -9,7 +9,7 @@ import com.github.vilmosnagy.elq.elqcore.service.opcode.callhandlers.MethodCallH
 import java.lang.Boolean
 
 /**
- * @author Vilmos Nagy <vilmos.nagy@outlook.com>
+ * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
 class JavaBooleanValueOfMethodCallHandler: MethodCallHandler {
 

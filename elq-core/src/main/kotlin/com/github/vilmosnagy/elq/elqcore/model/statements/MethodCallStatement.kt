@@ -5,7 +5,7 @@ import com.github.vilmosnagy.elq.elqcore.model.Method
 import java.lang.reflect.Method as JVMMethod
 
 /**
- * @author Vilmos Nagy <vilmos.nagy@outlook.com>
+ * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
 data class MethodCallStatement<out T> (
         val targetClass: Class<*>,

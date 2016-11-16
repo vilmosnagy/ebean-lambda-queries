@@ -3,7 +3,7 @@ package com.github.vilmosnagy.elq.elqcore
 import java.util.*
 
 /**
- * @author Vilmos Nagy <vilmos.nagy@outlook.com>
+ * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
 internal data class IncludedArgs(val args: List<Any>)
 

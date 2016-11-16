@@ -1,3 +1,5 @@
+import java.util.stream.Collectors
+
 buildscript {
     repositories {
         mavenCentral()
@@ -35,4 +37,18 @@ task codeCoverageReport(type: JacocoReport) {
 
 codeCoverageReport.dependsOn {
     subprojects*.test
+}
+
+release {
+    tagTemplate = 'release-${version}'
+}
+
+project.ext.relesedProjects = ['elq-core']
+project.allprojects.forEach { p ->
+    p.ext.released = project.ext.relesedProjects.any { rp -> p.name.contains(rp) }
+}
+
+if (! project.hasProperty("doNotRelease")) {
+    apply from: 'maven-push.gradle'
+    project.getTasksByName('uploadArchives', true).stream().filter { t -> project.getSubprojects().any {p -> project.ext.relesedProjects.any {rp -> p.name.contains(rp) } && p == t.project}}.forEach { t -> afterReleaseBuild.dependsOn t}
 }

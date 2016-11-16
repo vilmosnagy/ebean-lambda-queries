@@ -3,7 +3,7 @@ package com.github.vilmosnagy.elq.elqcore.interfaces;
 import java.io.Serializable;
 
 /**
- * @author Vilmos Nagy <vilmos.nagy@outlook.com>
+ * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
 public interface Predicate<T> extends Serializable {
 

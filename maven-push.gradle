@@ -1,0 +1,116 @@
+/*
+ * Copyright 2013 Chris Banes
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+def isReleaseBuild() {
+    return version.contains("SNAPSHOT") == false
+}
+
+def getReleaseRepositoryUrl() {
+    return project.ext.get('RELEASE_REPOSITORY_URL')
+}
+
+def getSnapshotRepositoryUrl() {
+    return project.ext.get('SNAPSHOT_REPOSITORY_URL')
+}
+
+def getRepositoryUsername() {
+    return project.ext.get('NEXUS_USERNAME')
+}
+
+def getRepositoryPassword() {
+    return project.ext.get('NEXUS_PASSWORD')
+}
+
+allprojects {
+    apply plugin: 'maven'
+    apply plugin: 'signing'
+
+    Properties props = new Properties()
+    props.load(new FileInputStream("$project.rootDir/environment.properties"))
+    props.each { prop ->
+        project.ext.set(prop.key, prop.value)
+    }
+
+    afterEvaluate { project ->
+        uploadArchives {
+
+            repositories {
+                mavenDeployer {
+                    beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+                    pom.groupId = project.ext.get("GROUP")
+                    pom.artifactId = project.ext.get("POM_ARTIFACT_ID")
+                    pom.version = version
+
+                    repository(url: getReleaseRepositoryUrl()) {
+                        authentication(userName: getRepositoryUsername(), password: getRepositoryPassword())
+                    }
+                    snapshotRepository(url: getSnapshotRepositoryUrl()) {
+                        authentication(userName: getRepositoryUsername(), password: getRepositoryPassword())
+                    }
+
+                    pom.project {
+                        name project.ext.get("POM_NAME")
+                        packaging project.ext.get("POM_PACKAGING")
+                        description project.ext.get("POM_DESCRIPTION")
+                        url project.ext.get("POM_URL")
+
+                        scm {
+                            url project.ext.get("POM_SCM_URL")
+                            connection project.ext.get("POM_SCM_CONNECTION")
+                            developerConnection project.ext.get("POM_SCM_DEV_CONNECTION")
+                        }
+
+                        licenses {
+                            license {
+                                name project.ext.get("POM_LICENCE_NAME")
+                                url project.ext.get("POM_LICENCE_URL")
+                                distribution project.ext.get("POM_LICENCE_DIST")
+                            }
+                        }
+
+                        developers {
+                            developer {
+                                id project.ext.get("POM_DEVELOPER_ID")
+                                name project.ext.get("POM_DEVELOPER_NAME")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        signing {
+            required { isReleaseBuild() && gradle.taskGraph.allTasks.any {t -> t.name.contains("uploadArchives")} && project.ext.released }
+            sign configurations.archives
+        }
+
+        task javadocJar(type: Jar) {
+            classifier = 'javadoc'
+            from javadoc
+        }
+
+        task sourcesJar(type: Jar) {
+            from sourceSets.main.allSource
+            classifier = 'sources'
+        }
+
+        artifacts {
+            archives sourcesJar
+            archives javadocJar
+        }
+    }
+}
