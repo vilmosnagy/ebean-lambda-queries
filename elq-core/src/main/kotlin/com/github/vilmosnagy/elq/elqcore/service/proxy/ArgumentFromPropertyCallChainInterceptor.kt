@@ -39,7 +39,7 @@ class ArgumentFromPropertyCallChainInterceptor(val propertyCallChain: List<Metho
         return java.lang.reflect.Array.get(java.lang.reflect.Array.newInstance(clazz, 1), 0) as T
     }
 
-    open fun getLastCapturedArguments(): Array<out Any?>? {
+    fun getLastCapturedArguments(): Array<out Any?>? {
         val nextInterceptor = this.nextInterceptor
         return if (nextInterceptor != null) {
             nextInterceptor.getLastCapturedArguments()
