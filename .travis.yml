@@ -1,7 +1,15 @@
 language: java
-
 jdk:
   - oraclejdk8
+env:
+  - EBEAN_VERSION="8.4.1"
+  - EBEAN_VERSION="8.4.2"
+  - EBEAN_VERSION="8.5.1"
+  - EBEAN_VERSION="8.6.1"
+  - EBEAN_VERSION="8.7.1"
+  - EBEAN_VERSION="8.8.1"
+  - EBEAN_VERSION="9.1.1"
+  - EBEAN_VERSION="9.1.2"
 
 sudo: required
 
@@ -9,4 +17,4 @@ services:
   - docker
 
 script:
-  - ./gradlew clean build
+  - ./gradlew clean build -PebeanVersion=$EBEAN_VERSION

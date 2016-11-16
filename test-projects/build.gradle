@@ -24,7 +24,6 @@ subprojects {
 
     buildscript {
         ext.kotlin_version = '1.0.5-2'
-        ext.ebean_version = '8.4.1'
 
         repositories {
             mavenCentral()
@@ -73,48 +72,18 @@ subprojects {
     ebeanEnhanceMain.dependsOn compileJava
     ebeanEnhanceTest.dependsOn compileTestJava
 
-    ext.env = project.hasProperty('env') ? project.getProperty('env') : "localdev"
+    ext.ebean_version = project.hasProperty('ebeanVersion') ? project.getProperty('ebeanVersion') : '8.4.1'
+    apply plugin: 'docker-compose'
 
-    if ( "$env" == 'localdev') {
-        apply plugin: 'docker-compose'
+    dockerCompose.isRequiredBy(test)
 
-        dockerCompose.isRequiredBy(test)
+    dockerCompose {
+        useComposeFiles = ["$project.projectDir/../../docker/docker-compose.yml"]
+        removeContainers = true
+    }
 
-        dockerCompose {
-            useComposeFiles = ["$project.projectDir/../../docker/docker-compose.yml"]
-            removeContainers = true
-        }
-
-        test {
-            environment("EBEAN_DB", "localdev")
-        }
-    } else if ("$env" == "ci") {
-        task initializeDb << {
-            configurations {
-                driver
-            }
-            dependencies {
-                driver 'org.postgresql:postgresql:9.4.1211.jre7'
-            }
-            URLClassLoader loader = GroovyObject.class.classLoader
-            configurations.driver.each {File file -> loader.addURL(file.toURI().toURL()) }
-
-            def db = [
-                    url     : 'jdbc:postgresql://postgres/ebean',
-                    user    : 'ebean',
-                    password: 'ebean',
-                    driver  : 'org.postgresql.Driver'
-            ]
-            def sql = Sql.newInstance(db.url, db.user, db.password, db.driver)
-            def update = file("$project.projectDir/../../docker/init/chinookDataset").text
-            sql.executeUpdate("drop schema public cascade; create schema public;" + update)
-            sql.close()
-        }
-
-        test.dependsOn(initializeDb)
-        test {
-            environment("EBEAN_DB", "gitlab")
-        }
+    test {
+        environment("EBEAN_DB", "localdev")
     }
 
     dependencies {
