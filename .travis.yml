@@ -22,7 +22,8 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
     - gradle/wrapper/
-
+install:
+  - ./gradlew assemble -PebeanVersion=$EBEAN_VERSION -PdoNotRelease=true
 script:
   - ./gradlew check jacocoTestReport codeCoverageReport -PebeanVersion=$EBEAN_VERSION -PdoNotRelease=true
 

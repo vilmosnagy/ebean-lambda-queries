@@ -39,78 +39,83 @@ allprojects {
     apply plugin: 'signing'
 
     Properties props = new Properties()
-    props.load(new FileInputStream("$project.rootDir/environment.properties"))
-    props.each { prop ->
-        project.ext.set(prop.key, prop.value)
+    File f = new File("$project.rootDir/environment.properties")
+    if (f.exists()) {
+        props.load(new FileInputStream(f))
+        props.each { prop ->
+            project.ext.set(prop.key, prop.value)
+        }
     }
 
     afterEvaluate { project ->
-        uploadArchives {
+        if (!project.hasProperty("doNotRelease")) {
+            uploadArchives {
 
-            repositories {
-                mavenDeployer {
-                    beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+                repositories {
+                    mavenDeployer {
+                        beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
-                    pom.groupId = project.ext.get("GROUP")
-                    pom.artifactId = project.ext.get("POM_ARTIFACT_ID")
-                    pom.version = version
+                        pom.groupId = project.ext.get("GROUP")
+                        pom.artifactId = project.ext.get("POM_ARTIFACT_ID")
+                        pom.version = version
 
-                    repository(url: getReleaseRepositoryUrl()) {
-                        authentication(userName: getRepositoryUsername(), password: getRepositoryPassword())
-                    }
-                    snapshotRepository(url: getSnapshotRepositoryUrl()) {
-                        authentication(userName: getRepositoryUsername(), password: getRepositoryPassword())
-                    }
-
-                    pom.project {
-                        name project.ext.get("POM_NAME")
-                        packaging project.ext.get("POM_PACKAGING")
-                        description project.ext.get("POM_DESCRIPTION")
-                        url project.ext.get("POM_URL")
-
-                        scm {
-                            url project.ext.get("POM_SCM_URL")
-                            connection project.ext.get("POM_SCM_CONNECTION")
-                            developerConnection project.ext.get("POM_SCM_DEV_CONNECTION")
+                        repository(url: getReleaseRepositoryUrl()) {
+                            authentication(userName: getRepositoryUsername(), password: getRepositoryPassword())
+                        }
+                        snapshotRepository(url: getSnapshotRepositoryUrl()) {
+                            authentication(userName: getRepositoryUsername(), password: getRepositoryPassword())
                         }
 
-                        licenses {
-                            license {
-                                name project.ext.get("POM_LICENCE_NAME")
-                                url project.ext.get("POM_LICENCE_URL")
-                                distribution project.ext.get("POM_LICENCE_DIST")
+                        pom.project {
+                            name project.ext.get("POM_NAME")
+                            packaging project.ext.get("POM_PACKAGING")
+                            description project.ext.get("POM_DESCRIPTION")
+                            url project.ext.get("POM_URL")
+
+                            scm {
+                                url project.ext.get("POM_SCM_URL")
+                                connection project.ext.get("POM_SCM_CONNECTION")
+                                developerConnection project.ext.get("POM_SCM_DEV_CONNECTION")
                             }
-                        }
 
-                        developers {
-                            developer {
-                                id project.ext.get("POM_DEVELOPER_ID")
-                                name project.ext.get("POM_DEVELOPER_NAME")
+                            licenses {
+                                license {
+                                    name project.ext.get("POM_LICENCE_NAME")
+                                    url project.ext.get("POM_LICENCE_URL")
+                                    distribution project.ext.get("POM_LICENCE_DIST")
+                                }
+                            }
+
+                            developers {
+                                developer {
+                                    id project.ext.get("POM_DEVELOPER_ID")
+                                    name project.ext.get("POM_DEVELOPER_NAME")
+                                }
                             }
                         }
                     }
                 }
             }
-        }
 
-        signing {
-            required { isReleaseBuild() && gradle.taskGraph.allTasks.any {t -> t.name.contains("uploadArchives")} && project.ext.released }
-            sign configurations.archives
-        }
+            signing {
+                required { isReleaseBuild() && gradle.taskGraph.allTasks.any { t -> t.name.contains("uploadArchives") } && project.ext.released }
+                sign configurations.archives
+            }
 
-        task javadocJar(type: Jar) {
-            classifier = 'javadoc'
-            from javadoc
-        }
+            task javadocJar(type: Jar) {
+                classifier = 'javadoc'
+                from javadoc
+            }
 
-        task sourcesJar(type: Jar) {
-            from sourceSets.main.allSource
-            classifier = 'sources'
-        }
+            task sourcesJar(type: Jar) {
+                from sourceSets.main.allSource
+                classifier = 'sources'
+            }
 
-        artifacts {
-            archives sourcesJar
-            archives javadocJar
+            artifacts {
+                archives sourcesJar
+                archives javadocJar
+            }
         }
     }
 }
