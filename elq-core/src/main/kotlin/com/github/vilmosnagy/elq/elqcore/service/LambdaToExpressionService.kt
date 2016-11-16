@@ -14,11 +14,13 @@ import java.io.Serializable
 import java.lang.invoke.SerializedLambda
 import java.lang.reflect.Modifier
 import javax.inject.Inject
+import javax.inject.Singleton
 import java.lang.reflect.Method as JVMMethod
 
 /**
  * @author Vilmos Nagy <vilmos.nagy@outlook.com>
  */
+@Singleton
 class LambdaToExpressionService
 @Inject constructor(
         private val methodParser: MethodParser

@@ -10,12 +10,14 @@ import org.apache.bcel.Repository
 import org.apache.bcel.classfile.Code
 import org.apache.bcel.classfile.JavaClass
 import javax.inject.Inject
+import javax.inject.Singleton
 
 import java.lang.reflect.Method as JVMMethod
 
 /**
  * @author Vilmos Nagy <vilmos.nagy@outlook.com>
  */
+@Singleton
 open class MethodParser @Inject constructor(
         val generalOpCodeParser: GeneralOpCodeParser
 ) {

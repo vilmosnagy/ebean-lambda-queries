@@ -9,12 +9,14 @@ import com.github.vilmosnagy.elq.elqcore.pop
 import org.apache.bcel.classfile.*
 import java.util.*
 import javax.inject.Inject
+import javax.inject.Singleton
 import org.apache.bcel.classfile.Method as BCELMethod
 import java.lang.reflect.Method as JVMMethod
 
 /**
  * @author Vilmos Nagy <vilmos.nagy@outlook.com>
  */
+@Singleton
 open class GeneralOpCodeParser @Inject constructor(
         private val invokeOpCodeParser: InvokeOpCodeParser
 ) {

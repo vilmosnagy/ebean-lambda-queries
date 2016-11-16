@@ -13,7 +13,9 @@ import com.github.vilmosnagy.elq.elqcore.subStringBetween
 import java.lang.reflect.Method
 import java.util.regex.Pattern
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 open class InvokeOpCodeParser @Inject constructor(
         val methodCallHandlerService: MethodCallHandlerService
 ) {

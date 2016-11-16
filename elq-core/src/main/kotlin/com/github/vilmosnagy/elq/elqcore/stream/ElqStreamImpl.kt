@@ -2,27 +2,17 @@ package com.github.vilmosnagy.elq.elqcore.stream
 
 import com.avaje.ebean.Ebean
 import com.avaje.ebean.Query
-import com.ea.agentloader.AgentLoader
-import com.ea.agentloader.ClassPathUtils
 import com.github.vilmosnagy.elq.elqcore.AppCtx
-import com.github.vilmosnagy.elq.elqcore.agent.JavaAgent
 import com.github.vilmosnagy.elq.elqcore.interfaces.Predicate
-import com.github.vilmosnagy.elq.elqcore.service.ExpressionBuilderService
-import java.io.Serializable
-import java.lang.invoke.SerializedLambda
-import java.lang.reflect.Method
-import java.util.function.BiConsumer
-import java.util.function.Supplier
 import java.util.stream.Collector
-import java.util.stream.Stream
-import java.util.stream.StreamSupport
 
 /**
  * @author Vilmos Nagy <vilmos.nagy@outlook.com>
  */
-class ElqStreamImpl<T>
-private constructor(override val clazz: Class<T>, override val query: Query<T>) :
-        ElqStreamKt<T> {
+data class ElqStreamImpl<T>  private constructor(
+        private val clazz: Class<T>,
+        private val query: Query<T>
+) : ElqStream<T> {
 
     private val filterMethodParser = AppCtx.get.filterMethodParser
     private val expressionBuilder = AppCtx.get.expressionBuilder
@@ -40,14 +30,23 @@ private constructor(override val clazz: Class<T>, override val query: Query<T>) 
         query.where(expressionBuilder.equals(parsedLambdaDetails.fieldName, parsedLambdaDetails.value.getValue(predicate)))
         return this
     }
+
+    override fun findAny(): T? {
+        query.setOrder(null)
+        return findFirst()
+    }
+
+    override fun findFirst(): T? {
+        query.maxRows = 1;
+        val resultList = query.findList()
+        if (resultList.size == 0) {
+            return null
+        } else {
+            return resultList[0]
+        }
+    }
 }
 
 fun <T> createElqStream(clazz: Class<T>): ElqStream<T> {
     return ElqStreamImpl(clazz)
 }
-
-
-//   if (ClassLoader.getSystemClassLoader() !== JavaAgent::class.java.getClassLoader()) {
-//      ClassPathUtils.appendToSystemPath(ClassPathUtils.getClassPathFor(JavaAgent::class.java))
-//   }
-//   AgentLoader.loadAgentClass(JavaAgent::class.java.name, null)
