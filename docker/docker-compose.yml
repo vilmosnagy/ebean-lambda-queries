@@ -1,0 +1,18 @@
+version: "2"
+
+services:
+  database:
+    build:
+      context: ./
+      dockerfile: postgresql.dockerfile
+    ports:
+      - "15432:5432"
+    networks:
+      - elq_net
+
+networks:
+  elq_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.31.253.0/24
