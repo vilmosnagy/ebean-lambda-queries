@@ -1,0 +1,1 @@
+![Build status](https://travis-ci.org/vilmosnagy/ebean-lambda-queries.svg?branch=master)  ![CodeCov](https://img.shields.io/codecov/c/github/vilmosnagy/ebean-lambda-queries.svg)
