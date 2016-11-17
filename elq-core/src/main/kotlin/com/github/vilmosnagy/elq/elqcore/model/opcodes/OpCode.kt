@@ -100,6 +100,22 @@ sealed class OpCode(val type: OpCodeType): EqualsAndHashCode() {
         override val compareType = CompareType.NOT_EQUALS
         override val included = includedArgs(type, branchIndex)
     }
+    class if_icmplt(override val branchByte1: Int, override val branchByte2: Int): OpCode(OpCodeType.if_icmplt), BranchOperation {
+        override val compareType = CompareType.LESS_THAN
+        override val included = includedArgs(type, branchIndex)
+    }
+    class if_icmpge(override val branchByte1: Int, override val branchByte2: Int): OpCode(OpCodeType.if_icmpge), BranchOperation {
+        override val compareType = CompareType.GREATER_THAN_OR_EQUALS
+        override val included = includedArgs(type, branchIndex)
+    }
+    class if_icmpgt(override val branchByte1: Int, override val branchByte2: Int): OpCode(OpCodeType.if_icmpgt), BranchOperation {
+        override val compareType = CompareType.GREATER_THAN
+        override val included = includedArgs(type, branchIndex)
+    }
+    class if_icmple(override val branchByte1: Int, override val branchByte2: Int): OpCode(OpCodeType.if_icmple), BranchOperation {
+        override val compareType = CompareType.LESS_THAN_OR_EQUALS
+        override val included = includedArgs(type, branchIndex)
+    }
 
     class ifnonnull(override val branchByte1: Int, override val branchByte2: Int): OpCode(OpCodeType.ifnonnull), BranchOperation {
         override val compareType = CompareType.NON_NULL

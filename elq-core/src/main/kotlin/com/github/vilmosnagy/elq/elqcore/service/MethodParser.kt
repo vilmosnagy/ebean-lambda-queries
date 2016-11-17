@@ -44,7 +44,7 @@ open class MethodParser @Inject constructor(
 
             val element = opcodeType.createNew(methodCode.subList(i, methodCode.size), bcelClass)
             retList.add(element)
-            i += element.type.otherByteCount + 1;
+            i += opcodeType.otherByteCount + 1;
         }
         return retList
     }

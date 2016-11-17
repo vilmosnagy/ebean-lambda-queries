@@ -19,5 +19,5 @@ public interface ElqStream<T> {
 
     public ElqStream<T> filter(@NotNull Predicate<T> predicate);
 
-    public <R, A> R collect(@NotNull Collector<? super T, A, R> collector);
+    public <R, A> R collect(@NotNull Collector<T, A, R> collector);
 }

@@ -1,9 +1,11 @@
 package com.github.vilmosnagy.elq.elqcore
 
+import java.lang.reflect.Method
+import java.lang.reflect.Modifier
 import java.util.*
 
 /**
- * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
+ * @author Vilmos Nagy <vilmos.nagy@outlook.com>
  */
 internal data class IncludedArgs(val args: List<Any>)
 
@@ -32,5 +34,8 @@ internal fun <E> Deque<E>.pop(methodCount: Int): List<E> {
     for (i in 0..(methodCount - 1)) {
         retList += pop()
     }
-    return retList.reversed().toList()
+    return retList.reversed()
 }
+
+internal val Method.isStatic: Boolean
+    get() = Modifier.isStatic(modifiers)

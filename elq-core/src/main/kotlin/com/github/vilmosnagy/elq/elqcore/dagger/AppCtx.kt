@@ -1,6 +1,7 @@
-package com.github.vilmosnagy.elq.elqcore
+package com.github.vilmosnagy.elq.elqcore.dagger
 
-import com.github.vilmosnagy.elq.elqcore.service.ExpressionBuilderService
+import com.avaje.ebean.Expression
+import com.github.vilmosnagy.elq.elqcore.interfaces.ExpressionBuilder
 import com.github.vilmosnagy.elq.elqcore.service.LambdaToExpressionService
 import com.github.vilmosnagy.elq.elqcore.service.MethodParser
 import dagger.Component
@@ -11,12 +12,12 @@ import javax.inject.Singleton
  * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
 @Singleton
-@Component
-interface AppCtx {
+@Component(modules = arrayOf(InterfaceModule::class))
+internal interface AppCtx {
 
     val filterMethodParser: LambdaToExpressionService
     val methodParser: MethodParser
-    val expressionBuilder: ExpressionBuilderService
+    val expressionBuilder: ExpressionBuilder<Expression>
 
     companion object {
         val get: AppCtx

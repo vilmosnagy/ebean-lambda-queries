@@ -8,6 +8,7 @@ import com.github.vilmosnagy.elq.elqcore.cache.MethodReturnValueProvider
 import com.github.vilmosnagy.elq.elqcore.interfaces.Predicate
 import com.github.vilmosnagy.elq.elqcore.model.FunctionAlbumIdEqualsFive
 import com.github.vilmosnagy.elq.elqcore.model.Method
+import com.github.vilmosnagy.elq.elqcore.model.lqexpressions.filter.ParsedFilterLQExpressionLeaf
 import com.github.vilmosnagy.elq.elqcore.model.statements.GetFieldStatement
 import com.github.vilmosnagy.elq.elqcore.model.statements.MethodCallStatement
 import com.github.vilmosnagy.elq.elqcore.model.statements.Statement
@@ -29,18 +30,18 @@ import java.util.*
 class LambdaToExpressionServiceTest : FeatureSpec() {
 
     @Mock
-    lateinit var methodParser: MethodParser
+    private lateinit var methodParser: MethodParser
 
     @Mock
-    lateinit var expressionBuilder: ExpressionBuilderService
+    private lateinit var expressionBuilder: EbeanExpressionBuilder
 
     @InjectMocks
-    lateinit var testObj: LambdaToExpressionService
+    private lateinit var testObj: LambdaToExpressionService
 
     init {
         MockitoAnnotations.initMocks(this)
 
-        feature("Should parse filter method into ParsedFilterLambdaDetails") {
+        feature("Should parse filter method into ParsedFilterLQExpressionLeaf") {
             scenario("should transform parsed method (`getField().equals(constant)`) to (fieldName, value) pair") {
                 val lambdaClass = FunctionAlbumIdEqualsFive::class.java
                 val lambdaMethod = FunctionAlbumIdEqualsFive::class.java.getDeclaredMethod("test", TestEntity::class.java)
@@ -117,7 +118,7 @@ class LambdaToExpressionServiceTest : FeatureSpec() {
                 whenever(methodParser.unravelMethodCallChain(getterReturnStatement)).thenReturn(getterReturnStatement)
 
                 val actual = testObj.parseFilterMethod(lambda, TestEntity::class.java)
-                actual shouldBe ParsedFilterLambdaDetails<TestEntity>("title", MethodReturnValueProvider(stringValueOfMethod, null, listOf(ConstantValueProvider("Gordon Freeman"))))
+                actual shouldBe ParsedFilterLQExpressionLeaf<TestEntity>("title", MethodReturnValueProvider(stringValueOfMethod, null, listOf(ConstantValueProvider("Gordon Freeman"))), CompareType.EQUALS)
 
                 verify(methodParser).unravelMethodCallChain(getterReturnStatement)
             }

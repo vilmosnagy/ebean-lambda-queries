@@ -1,9 +1,9 @@
 package com.github.vilmosnagy.elq.elqcore.service;
 
 import com.github.vilmosnagy.elq.elqcore.cache.ConstantValueProvider;
-import com.github.vilmosnagy.elq.elqcore.interfaces.Predicate;
 import com.github.vilmosnagy.elq.elqcore.model.FunctionAlbumIdEqualsFive;
 import com.github.vilmosnagy.elq.elqcore.model.Method;
+import com.github.vilmosnagy.elq.elqcore.model.lqexpressions.filter.ParsedFilterLQExpressionLeaf;
 import com.github.vilmosnagy.elq.elqcore.model.statements.GetFieldStatement;
 import com.github.vilmosnagy.elq.elqcore.model.statements.MethodCallStatement;
 import com.github.vilmosnagy.elq.elqcore.model.statements.Statement;
@@ -35,7 +35,7 @@ public class LambdaToExpressionServiceJavaTest {
     private MethodParser methodParser;
 
     @Mock
-    private ExpressionBuilderService expressionBuilder;
+    private EbeanExpressionBuilder expressionBuilder;
 
     @InjectMocks
     private LambdaToExpressionService testObj;
@@ -70,8 +70,8 @@ public class LambdaToExpressionServiceJavaTest {
         when(methodParser.parseMethod(entityClass, entityIdGetterMethod)).thenReturn(getterMethod);
         when(methodParser.unravelMethodCallChain(getterReturnStatement)).thenReturn((Statement.EvaluableStatement) getterReturnStatement);
 
-        ParsedFilterLambdaDetails actual = testObj.parseFilterMethod(album -> album.getId() == 5, TestEntity.class);
-        assertEquals(new ParsedFilterLambdaDetails<>("id", new ConstantValueProvider<>(5)), actual);
+        ParsedFilterLQExpressionLeaf actual = testObj.parseFilterMethod(album -> album.getId() == 5, TestEntity.class);
+        assertEquals(new ParsedFilterLQExpressionLeaf<>("id", new ConstantValueProvider<>(5), CompareType.EQUALS), actual);
 
         verify(methodParser).unravelMethodCallChain(getterReturnStatement);
     }

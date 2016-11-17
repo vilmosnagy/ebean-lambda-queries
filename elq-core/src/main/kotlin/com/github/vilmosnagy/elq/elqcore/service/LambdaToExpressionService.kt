@@ -2,13 +2,17 @@ package com.github.vilmosnagy.elq.elqcore.service
 
 import com.avaje.ebean.Expression
 import com.github.vilmosnagy.elq.elqcore.cache.*
+import com.github.vilmosnagy.elq.elqcore.interfaces.ExpressionBuilder
 import com.github.vilmosnagy.elq.elqcore.interfaces.Predicate
+import com.github.vilmosnagy.elq.elqcore.isStatic
 import com.github.vilmosnagy.elq.elqcore.model.Method
+import com.github.vilmosnagy.elq.elqcore.model.lqexpressions.filter.ParsedFilterLQExpressionLeaf
 import com.github.vilmosnagy.elq.elqcore.model.statements.GetFieldStatement
 import com.github.vilmosnagy.elq.elqcore.model.statements.MethodCallStatement
 import com.github.vilmosnagy.elq.elqcore.model.statements.Statement
 import com.github.vilmosnagy.elq.elqcore.model.statements.branch.BranchedStatement
 import com.github.vilmosnagy.elq.elqcore.model.statements.branch.CompareType
+import com.github.vilmosnagy.elq.elqcore.model.statements.branch.CompareType.*
 import com.github.vilmosnagy.elq.elqcore.model.statements.kotlin.ThrowUninitializedPropertyAccessException
 import java.io.Serializable
 import java.lang.invoke.SerializedLambda
@@ -26,7 +30,7 @@ class LambdaToExpressionService
         private val methodParser: MethodParser
 ) {
 
-    fun <T> parseFilterMethod(predicate: Predicate<T>, entityClazz: Class<T>): ParsedFilterLambdaDetails<T> {
+    fun <T> parseFilterMethod(predicate: Predicate<T>, entityClazz: Class<T>): ParsedFilterLQExpressionLeaf<T> {
         val (predicateClass, filterMethod) = getPredicateClassAndFilterMethod(entityClazz, predicate)
         val method = methodParser.parseMethod(predicateClass, filterMethod)
         val evaluatedReturn = method.returnStatement.evaluate()
@@ -59,25 +63,32 @@ class LambdaToExpressionService
         return method.invoke(lambda) as SerializedLambda
     }
 
-    private fun <T> parseBranchedStatementToFilter(returnStatement: BranchedStatement, entityClazz: Class<T>): ParsedFilterLambdaDetails<T> {
-        return if (returnStatement.branch01.evaluate() == true && returnStatement.branch02.evaluate() == false
-                && returnStatement.compareStatement.compareType == CompareType.NOT_EQUALS) {
-            parseEqualsBranchesToFilter(returnStatement.compareStatement.v1, returnStatement.compareStatement.v2, entityClazz)
+    private fun <T> parseBranchedStatementToFilter(returnStatement: BranchedStatement, entityClazz: Class<T>): ParsedFilterLQExpressionLeaf<T> {
+        return if (simpleTrueFalseBranch(returnStatement)) {
+            val compareType = getCompareTypeAndNegateIfNecessary(returnStatement)
+            val v1 = returnStatement.compareStatement.v1
+            val v2 = returnStatement.compareStatement.v2
+            val fieldGetterMethod = getFieldReferenceFromComparedValues(v1, v2, entityClazz)
+            val rhsValue = if (fieldGetterMethod == v1) v2 else v1
+            val (parsedFieldGetterMethod, propertyName) = getFieldReferenceFromGetterMethod(fieldGetterMethod)
+            val evaluatedRhsValue = evaluateRhsStatement<T>(fieldGetterMethod, parsedFieldGetterMethod, rhsValue)
+            ParsedFilterLQExpressionLeaf(fieldName = propertyName, value = evaluatedRhsValue, compareType = compareType)
         } else {
             TODO()
         }
     }
 
-    private fun <T> parseEqualsBranchesToFilter(v1: Statement, v2: Statement, entityClazz: Class<T>): ParsedFilterLambdaDetails<T> {
-        val fieldReference = getFieldReferenceFromComparedValues(v1, v2, entityClazz)
-        val otherReference = if (fieldReference == v1) v2 else v1
-        return parseFieldEqualsExpression(fieldReference, otherReference)
+    private fun getCompareTypeAndNegateIfNecessary(returnStatement: BranchedStatement): CompareType {
+      return if (returnStatement.branch01.evaluate() == true) {
+          returnStatement.compareStatement.compareType.negate()
+      } else {
+          returnStatement.compareStatement.compareType
+      }
     }
 
-    private fun <T> parseFieldEqualsExpression(fieldGetterMethodCall: MethodCallStatement<*>, rhsValue: Statement): ParsedFilterLambdaDetails<T> {
-        val (parsedGetterMethod, propertyName) = getFieldReferenceFromGetterMethod(fieldGetterMethodCall)
-        val evaluatedRhsValue = evaluateRhsStatement<T>(fieldGetterMethodCall, parsedGetterMethod, rhsValue)
-        return ParsedFilterLambdaDetails(fieldName = propertyName, value = evaluatedRhsValue)
+    private fun simpleTrueFalseBranch(returnStatement: BranchedStatement): Boolean {
+        return listOf(returnStatement.branch01.evaluate(), returnStatement.branch02.evaluate()).containsAll(listOf(true, false))
+                && returnStatement.branch01.evaluate() != returnStatement.branch02.evaluate()
     }
 
     private fun <T> evaluateRhsStatement(fieldGetterMethodCall: MethodCallStatement<*>, parsedGetterMethod: Method, rhsValue: Statement): ValueProvider<Predicate<T>> {
@@ -147,10 +158,3 @@ class LambdaToExpressionService
 
 }
 
-private val java.lang.reflect.Method.isStatic: Boolean
-    get() = Modifier.isStatic(modifiers)
-
-data class ParsedFilterLambdaDetails<T> (
-        val fieldName: String,
-        val value: ValueProvider<Predicate<T>>
-)
