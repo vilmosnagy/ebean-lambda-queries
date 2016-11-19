@@ -102,44 +102,44 @@ class AlbumTest : BaseTest() {
 
             scenario("filter with simple predicate where id less than constant should work correctly") {
                 val album = createElqStream(Album::class.java).filter { it.id < 5 }.collect(Collectors.toList())
-                should { album.count { it.title == "For Those About To Rock We Salute You" } == 1 }
-                should { album.count { it.title == "Balls to the Wall" } == 1 }
-                should { album.count { it.title == "Restless and Wild" } == 1 }
-                should { album.count { it.title == "Let There Be Rock" } == 1 }
-                should { album.all { it.id < 5 } }
-                should { album.size == 4 }
+                (album.count { it.title == "For Those About To Rock We Salute You" } == 1) shouldBe true
+                (album.count { it.title == "Balls to the Wall" } == 1) shouldBe true
+                (album.count { it.title == "Restless and Wild" } == 1) shouldBe true
+                (album.count { it.title == "Let There Be Rock" } == 1) shouldBe true
+                (album.all { it.id < 5 }) shouldBe true
+                (album.size == 4) shouldBe true
             }
 
-            scenario("filter with simple predicate where id less than constant should work correctly") {
+            scenario("filter with simple predicate where id less than or equal to constant should work correctly") {
                 val album = createElqStream(Album::class.java).filter { it.id <= 5 }.collect(Collectors.toList())
-                should {album.count { it.title == "For Those About To Rock We Salute You" } == 1 }
-                should {album.count { it.title == "Balls to the Wall" } == 1 }
-                should {album.count { it.title == "Restless and Wild" } == 1 }
-                should {album.count { it.title == "Let There Be Rock" } == 1 }
-                should {album.count { it.title == "Big Ones" } == 1 }
-                should {album.all { it.id <= 5 } }
-                should { album.size == 5 }
+                (album.count { it.title == "For Those About To Rock We Salute You" } == 1) shouldBe true
+                (album.count { it.title == "Balls to the Wall" } == 1) shouldBe true
+                (album.count { it.title == "Restless and Wild" } == 1) shouldBe true
+                (album.count { it.title == "Let There Be Rock" } == 1) shouldBe true
+                (album.count { it.title == "Big Ones" } == 1) shouldBe true
+                (album.all { it.id <= 5 }) shouldBe true
+                (album.size == 5) shouldBe true
             }
 
-            scenario("filter with simple predicate where id less than constant should work correctly") {
+            scenario("filter with simple predicate where id greater than constant should work correctly") {
                 val album = createElqStream(Album::class.java).filter { it.id > 343 }.collect(Collectors.toList())
-                should { album.count { it.title == "Schubert: The Late String Quartets & String Quintet (3 CD's)" } == 1 }
-                should { album.count { it.title == "Monteverdi: L'Orfeo" } == 1 }
-                should { album.count { it.title == "Mozart: Chamber Music" } == 1 }
-                should { album.count { it.title == "Koyaanisqatsi (Soundtrack from the Motion Picture)" } == 1 }
-                should { album.all { it.id > 343 } }
-                should { album.size == 4 }
+                (album.count { it.title == "Schubert: The Late String Quartets & String Quintet (3 CD's)" } == 1) shouldBe true
+                (album.count { it.title == "Monteverdi: L'Orfeo" } == 1) shouldBe true
+                (album.count { it.title == "Mozart: Chamber Music" } == 1) shouldBe true
+                (album.count { it.title == "Koyaanisqatsi (Soundtrack from the Motion Picture)" } == 1) shouldBe true
+                (album.all { it.id > 343 }) shouldBe true
+                (album.size == 4) shouldBe true
             }
 
-            scenario("filter with simple predicate where id less than constant should work correctly") {
+            scenario("filter with simple predicate where id greater than or equal to constant should work correctly") {
                 val album = createElqStream(Album::class.java).filter { it.id >= 343 }.collect(Collectors.toList())
-                should { album.count { it.title == "Schubert: The Late String Quartets & String Quintet (3 CD's)" } == 1 }
-                should { album.count { it.title == "Monteverdi: L'Orfeo" } == 1 }
-                should { album.count { it.title == "Mozart: Chamber Music" } == 1 }
-                should { album.count { it.title == "Koyaanisqatsi (Soundtrack from the Motion Picture)" } == 1 }
-                should { album.count { it.title == "Respighi:Pines of Rome" } == 1 }
-                should { album.all { it.id >= 343 } }
-                should { album.size == 5 }
+                (album.count { it.title == "Schubert: The Late String Quartets & String Quintet (3 CD's)" } == 1) shouldBe true
+                (album.count { it.title == "Monteverdi: L'Orfeo" } == 1) shouldBe true
+                (album.count { it.title == "Mozart: Chamber Music" } == 1) shouldBe true
+                (album.count { it.title == "Koyaanisqatsi (Soundtrack from the Motion Picture)" } == 1) shouldBe true
+                (album.count { it.title == "Respighi:Pines of Rome" } == 1) shouldBe true
+                (album.all { it.id >= 343 }) shouldBe true
+                (album.size == 5) shouldBe true
             }
         }
 
