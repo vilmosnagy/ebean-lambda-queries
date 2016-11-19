@@ -16,8 +16,8 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-open class InvokeOpCodeParser @Inject constructor(
-        val methodCallHandlerService: MethodCallHandlerService
+internal open class InvokeOpCodeParser @Inject constructor(
+        private val methodCallHandlerService: MethodCallHandlerService
 ) {
 
     open fun parseInvokeOpCode(opCode: OpCode.InvokeFunctionOperation,

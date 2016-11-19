@@ -7,13 +7,13 @@ import java.lang.reflect.Method as JVMMethod
 /**
  * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
-data class MethodCallStatement<out T> (
-        val targetClass: Class<*>,
-        val targetMethod: java.lang.reflect.Method,
-        val parameters: List<Statement> = listOf(),
-        val returnType: Class<out T>,
+internal data class MethodCallStatement<out T>(
+        internal val targetClass: Class<*>,
+        internal val targetMethod: java.lang.reflect.Method,
+        internal val parameters: List<Statement> = listOf(),
+        internal val returnType: Class<out T>,
         private val evaluatedStatement: Statement? = null
-): Statement.EvaluableStatement<Method>, Statement.LazyEvaluatedStatement<Method> {
+) : Statement.EvaluableStatement<Method>, Statement.LazyEvaluatedStatement<Method> {
 
     override val value: Method by lazy {
         if (evaluatedStatement != null) {

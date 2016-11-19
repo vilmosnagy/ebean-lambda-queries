@@ -5,10 +5,10 @@ import java.lang.reflect.Method as JVMMethod
 /**
  * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
-data class MethodReturnValueProvider<T> (
-        private val targetMethod: JVMMethod,
-        private val objectInvokedOn: Any?,
-        private val parameters: List<ValueProvider<T>> = listOf()
+internal data class MethodReturnValueProvider<T> (
+        internal val targetMethod: JVMMethod,
+        internal val objectInvokedOn: Any?,
+        internal val parameters: List<ValueProvider<T>> = listOf()
 ) : ValueProvider<T> {
 
     override fun getValue(cacheKey: T): Any? {

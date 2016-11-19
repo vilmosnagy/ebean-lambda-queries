@@ -11,7 +11,7 @@ import com.github.vilmosnagy.elq.elqcore.service.opcode.callhandlers.MethodCallH
 /**
  * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
-class JavaObjectEqualsMethodCallHandler : MethodCallHandler {
+internal class JavaObjectEqualsMethodCallHandler : MethodCallHandler {
 
     override fun getMethodCall(): MethodCall? {
         return null;

@@ -7,12 +7,13 @@ import java.util.*
 /**
  * @author Vilmos Nagy <vilmos.nagy@outlook.com>
  */
-internal data class IncludedArgs(val args: List<Any>)
+internal interface ValueClassUtil
+private data class IncludedArgs(private val args: List<Any>) : ValueClassUtil
 
-internal fun includedArgs(vararg args: Any) = IncludedArgs(args.toList())
+internal fun includedArgs(vararg args: Any): ValueClassUtil = IncludedArgs(args.toList())
 
-abstract class EqualsAndHashCode {
-    internal abstract val included : IncludedArgs
+internal abstract class EqualsAndHashCode {
+    internal abstract val included : ValueClassUtil
 
     override fun equals(other: Any?) = when {
         this === other -> true

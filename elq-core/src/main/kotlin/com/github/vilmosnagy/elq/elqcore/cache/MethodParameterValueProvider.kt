@@ -9,7 +9,7 @@ import java.lang.reflect.Method as JVMMethod
 /**
  * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
-data class MethodParameterValueProvider<T>(internal val variableIndex: Int, internal val propertyCallChain: List<JVMMethod>): ValueProvider<Predicate<T>> {
+internal data class MethodParameterValueProvider<T>(internal val variableIndex: Int, internal val propertyCallChain: List<JVMMethod>): ValueProvider<Predicate<T>> {
 
     override fun getValue(cacheKey: Predicate<T>): Any? {
         val (proxiedInstance, interceptorChain) = getProxiedInstance<T>(propertyCallChain)

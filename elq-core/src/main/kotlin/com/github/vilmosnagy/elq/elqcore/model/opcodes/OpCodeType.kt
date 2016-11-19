@@ -2,7 +2,7 @@ package com.github.vilmosnagy.elq.elqcore.model.opcodes
 
 import org.apache.bcel.classfile.JavaClass
 
-internal enum class OpCodeType(val opCode: Int, val otherByteCount: Int = 0) {
+internal enum class OpCodeType(internal val opCode: Int, internal val otherByteCount: Int = 0) {
     //<editor-fold desc="iload_0">
     iload_0(0x1A) {
         override fun createNew(followingBytes: List<Int>, bcelClass: JavaClass): OpCode {

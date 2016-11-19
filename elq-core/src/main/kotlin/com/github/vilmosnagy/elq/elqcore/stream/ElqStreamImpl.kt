@@ -9,7 +9,7 @@ import java.util.stream.Collector
 /**
  * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
-public data class ElqStreamImpl<T>  private constructor(
+internal data class ElqStreamImpl<T>  private constructor(
         private val clazz: Class<T>,
         private val query: Query<T>
 ) : ElqStream<T> {
@@ -47,6 +47,13 @@ public data class ElqStreamImpl<T>  private constructor(
     }
 }
 
+/**
+ * Creates a new Ebean Lambda Query Stream.
+ *
+ * @param T the type of the entity in this stream
+ * @param clazz the non-null [Class] representing the entity in this stream
+ * @return the new Ebean Lambda Query Stream
+ */
 public fun <T> createElqStream(clazz: Class<T>): ElqStream<T> {
     return ElqStreamImpl(clazz)
 }

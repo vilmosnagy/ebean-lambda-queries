@@ -18,8 +18,8 @@ import java.lang.reflect.Method as JVMMethod
  * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
 @Singleton
-open class MethodParser @Inject constructor(
-        val generalOpCodeParser: GeneralOpCodeParser
+internal open class MethodParser @Inject constructor(
+        private val generalOpCodeParser: GeneralOpCodeParser
 ) {
 
     open fun parseMethod(classToParse: Class<*>, declaredMethod: JVMMethod): Method {

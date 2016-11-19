@@ -14,9 +14,9 @@ import java.lang.reflect.Method as JVMMethod
 /**
  * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
-data class Method (
-        val jvmMethod: JVMMethod,
-        val returnStatement: Statement
+internal data class Method (
+        internal val jvmMethod: JVMMethod,
+        internal val returnStatement: Statement
 ): EvaluableStatement<Statement> {
     override val value: Statement
         get() = returnStatement

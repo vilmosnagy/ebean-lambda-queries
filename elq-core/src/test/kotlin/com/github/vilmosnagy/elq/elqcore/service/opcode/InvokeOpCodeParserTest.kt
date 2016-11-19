@@ -28,10 +28,10 @@ import java.util.*
 class InvokeOpCodeParserTest : FeatureSpec() {
 
     @Mock
-    lateinit var methodCallHandlerService: MethodCallHandlerService
+    private lateinit var methodCallHandlerService: MethodCallHandlerService
 
     @InjectMocks
-    lateinit var testObj: InvokeOpCodeParser
+    private lateinit var testObj: InvokeOpCodeParser
 
     init {
         MockitoAnnotations.initMocks(this)

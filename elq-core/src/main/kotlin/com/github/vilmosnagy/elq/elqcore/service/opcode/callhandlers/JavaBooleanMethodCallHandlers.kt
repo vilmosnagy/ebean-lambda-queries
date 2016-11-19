@@ -11,7 +11,7 @@ import java.lang.Boolean
 /**
  * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
-class JavaBooleanValueOfMethodCallHandler: MethodCallHandler {
+internal class JavaBooleanValueOfMethodCallHandler: MethodCallHandler {
 
     companion object {
         val METHOD_CALL = MethodCall(MethodCallType.INVOKE_STATIC, Boolean::class.java, Boolean::class.java.getDeclaredMethod("valueOf", Boolean.TYPE))

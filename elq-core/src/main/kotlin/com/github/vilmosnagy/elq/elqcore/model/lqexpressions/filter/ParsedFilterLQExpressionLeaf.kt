@@ -5,10 +5,10 @@ import com.github.vilmosnagy.elq.elqcore.interfaces.ExpressionBuilder
 import com.github.vilmosnagy.elq.elqcore.interfaces.Predicate
 import com.github.vilmosnagy.elq.elqcore.model.statements.branch.CompareType
 
-data class ParsedFilterLQExpressionLeaf<ENTITY_TYPE> (
-        val fieldName: String,
-        val value: ValueProvider<Predicate<ENTITY_TYPE>>,
-        val compareType: CompareType
+internal data class ParsedFilterLQExpressionLeaf<ENTITY_TYPE> (
+        internal val fieldName: String,
+        internal val value: ValueProvider<Predicate<ENTITY_TYPE>>,
+        internal val compareType: CompareType
 ) {
     fun <EXPRESSION_TYPE> buildExpression(expressionBuilder: ExpressionBuilder<EXPRESSION_TYPE>, predicate: Predicate<ENTITY_TYPE>): EXPRESSION_TYPE {
         val evaluatedValue = value.getValue(predicate)

@@ -3,7 +3,7 @@ package com.github.vilmosnagy.elq.elqcore.model.statements
 /**
  * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
-class GetFieldStatement(
-        val javaClass: Class<*>,
-        val fieldName: String
+internal class GetFieldStatement(
+        internal val javaClass: Class<*>,
+        internal val fieldName: String
 ): Statement
