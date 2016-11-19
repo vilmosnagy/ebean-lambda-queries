@@ -17,7 +17,7 @@ import java.lang.reflect.Method as JVMMethod
  * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
 @Singleton
-open class GeneralOpCodeParser @Inject constructor(
+internal open class GeneralOpCodeParser @Inject constructor(
         private val invokeOpCodeParser: InvokeOpCodeParser
 ) {
 

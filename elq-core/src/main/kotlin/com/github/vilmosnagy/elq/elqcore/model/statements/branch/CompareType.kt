@@ -1,6 +1,6 @@
 package com.github.vilmosnagy.elq.elqcore.model.statements.branch
 
-enum class CompareType {
+internal enum class CompareType {
     NOT_EQUALS { override fun negate() = EQUALS },
     EQUALS { override fun negate() = NOT_EQUALS },
 
@@ -11,5 +11,5 @@ enum class CompareType {
 
     NON_NULL { override fun negate() = TODO() };
 
-    abstract fun negate(): CompareType
+    internal abstract fun negate(): CompareType
 }

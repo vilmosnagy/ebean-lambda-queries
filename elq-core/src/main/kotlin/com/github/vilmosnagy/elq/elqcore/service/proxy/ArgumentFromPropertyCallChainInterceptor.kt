@@ -5,11 +5,11 @@ import net.sf.cglib.proxy.MethodInterceptor
 import net.sf.cglib.proxy.MethodProxy
 import java.lang.reflect.Method
 
-class ArgumentFromPropertyCallChainInterceptor(val propertyCallChain: List<Method>) : MethodInterceptor {
+internal class ArgumentFromPropertyCallChainInterceptor(private val propertyCallChain: List<Method>) : MethodInterceptor {
 
-    val original: Any by lazy { propertyCallChain[0].declaringClass.newInstance() }
-    var nextInterceptor: ArgumentFromPropertyCallChainInterceptor? = null
-    var capturedArguments: Array<out Any?>? = null
+    private val original: Any by lazy { propertyCallChain[0].declaringClass.newInstance() }
+    private var nextInterceptor: ArgumentFromPropertyCallChainInterceptor? = null
+    private var capturedArguments: Array<out Any?>? = null
 
     override fun intercept(proxy: Any?, method: Method?, args: Array<out Any?>?, mproxy: MethodProxy?): Any? {
         return if (propertyCallChain.size > 1) {
@@ -35,8 +35,8 @@ class ArgumentFromPropertyCallChainInterceptor(val propertyCallChain: List<Metho
         return method?.invoke(original, *varargs)
     }
 
-    private fun <T> getDefaultValue(clazz: Class<T>): T {
-        return java.lang.reflect.Array.get(java.lang.reflect.Array.newInstance(clazz, 1), 0) as T
+    private fun <T> getDefaultValue(clazz: Class<T>): Any? {
+        return java.lang.reflect.Array.get(java.lang.reflect.Array.newInstance(clazz, 1), 0)
     }
 
     fun getLastCapturedArguments(): Array<out Any?>? {

@@ -5,7 +5,7 @@ import com.github.vilmosnagy.elq.elqcore.model.statements.branch.CompareType
 /**
  * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
-interface Statement {
+internal interface Statement {
 
     fun evaluate(): Any? {
         return this;

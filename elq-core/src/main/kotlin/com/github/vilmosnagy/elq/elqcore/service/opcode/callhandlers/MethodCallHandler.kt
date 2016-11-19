@@ -8,7 +8,7 @@ import java.lang.reflect.Method
 /**
  * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
-interface MethodCallHandler {
+internal interface MethodCallHandler {
 
     enum class MethodCallType {
         INVOKE_STATIC, INVOKE_DYNAMIC, INVOKE_SPECIAL, INVOKE_VIRTUAL

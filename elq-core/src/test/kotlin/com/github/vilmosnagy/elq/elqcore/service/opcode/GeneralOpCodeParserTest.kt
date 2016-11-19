@@ -31,10 +31,10 @@ import java.lang.reflect.Method as JVMMethod
 class GeneralOpCodeParserTest : FeatureSpec() {
 
     @Mock
-    lateinit var invokeOpCodeParser: InvokeOpCodeParser
+    private lateinit var invokeOpCodeParser: InvokeOpCodeParser
 
     @InjectMocks
-    lateinit var testObj: GeneralOpCodeParser
+    private lateinit var testObj: GeneralOpCodeParser
 
     init {
         MockitoAnnotations.initMocks(this)

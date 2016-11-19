@@ -14,7 +14,7 @@ import kotlin.jvm.internal.Intrinsics
 /**
  * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
-class KotlinInternalEqualsMethodCallHandler : MethodCallHandler {
+internal class KotlinInternalEqualsMethodCallHandler : MethodCallHandler {
 
     companion object {
         val METHOD_CALL = MethodCall(
@@ -38,7 +38,7 @@ class KotlinInternalEqualsMethodCallHandler : MethodCallHandler {
 
 }
 
-class KotlinInternalThrowUninitializedPropertyAccessExceptionMethodCallHandler : MethodCallHandler {
+internal class KotlinInternalThrowUninitializedPropertyAccessExceptionMethodCallHandler : MethodCallHandler {
 
     companion object {
         val METHOD_CALL = MethodCall(

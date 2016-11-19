@@ -1,8 +1,6 @@
 package com.github.vilmosnagy.elq.elqcore.service
 
-import com.avaje.ebean.Expression
 import com.github.vilmosnagy.elq.elqcore.cache.*
-import com.github.vilmosnagy.elq.elqcore.interfaces.ExpressionBuilder
 import com.github.vilmosnagy.elq.elqcore.interfaces.Predicate
 import com.github.vilmosnagy.elq.elqcore.isStatic
 import com.github.vilmosnagy.elq.elqcore.model.Method
@@ -12,11 +10,9 @@ import com.github.vilmosnagy.elq.elqcore.model.statements.MethodCallStatement
 import com.github.vilmosnagy.elq.elqcore.model.statements.Statement
 import com.github.vilmosnagy.elq.elqcore.model.statements.branch.BranchedStatement
 import com.github.vilmosnagy.elq.elqcore.model.statements.branch.CompareType
-import com.github.vilmosnagy.elq.elqcore.model.statements.branch.CompareType.*
 import com.github.vilmosnagy.elq.elqcore.model.statements.kotlin.ThrowUninitializedPropertyAccessException
 import java.io.Serializable
 import java.lang.invoke.SerializedLambda
-import java.lang.reflect.Modifier
 import javax.inject.Inject
 import javax.inject.Singleton
 import java.lang.reflect.Method as JVMMethod
@@ -25,7 +21,7 @@ import java.lang.reflect.Method as JVMMethod
  * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
 @Singleton
-class LambdaToExpressionService
+internal class LambdaToExpressionService
 @Inject constructor(
         private val methodParser: MethodParser
 ) {
@@ -79,11 +75,11 @@ class LambdaToExpressionService
     }
 
     private fun getCompareTypeAndNegateIfNecessary(returnStatement: BranchedStatement): CompareType {
-      return if (returnStatement.branch01.evaluate() == true) {
-          returnStatement.compareStatement.compareType.negate()
-      } else {
-          returnStatement.compareStatement.compareType
-      }
+        return if (returnStatement.branch01.evaluate() == true) {
+            returnStatement.compareStatement.compareType.negate()
+        } else {
+            returnStatement.compareStatement.compareType
+        }
     }
 
     private fun simpleTrueFalseBranch(returnStatement: BranchedStatement): Boolean {

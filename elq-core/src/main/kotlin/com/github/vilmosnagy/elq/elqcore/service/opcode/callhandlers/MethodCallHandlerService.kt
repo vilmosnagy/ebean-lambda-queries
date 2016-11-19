@@ -10,7 +10,7 @@ import javax.inject.Singleton
  * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
 @Singleton
-open class MethodCallHandlerService @Inject constructor() {
+internal open class MethodCallHandlerService @Inject constructor() {
 
     private val specialMethodCallHandlers: MutableList<MethodCallHandler> = mutableListOf(
             JavaBooleanValueOfMethodCallHandler(), KotlinInternalEqualsMethodCallHandler(), JavaObjectEqualsMethodCallHandler(), KotlinInternalThrowUninitializedPropertyAccessExceptionMethodCallHandler()
