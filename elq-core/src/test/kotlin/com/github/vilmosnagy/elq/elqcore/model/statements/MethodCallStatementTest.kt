@@ -1,6 +1,6 @@
 package com.github.vilmosnagy.elq.elqcore.model.statements
 
-import com.github.vilmosnagy.elq.elqcore.AppCtx
+import com.github.vilmosnagy.elq.elqcore.dagger.AppCtx
 import com.github.vilmosnagy.elq.elqcore.model.Method
 import com.github.vilmosnagy.elq.elqcore.service.MethodParser
 import com.nhaarman.mockito_kotlin.mock

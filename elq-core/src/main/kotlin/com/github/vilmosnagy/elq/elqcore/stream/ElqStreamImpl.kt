@@ -2,14 +2,14 @@ package com.github.vilmosnagy.elq.elqcore.stream
 
 import com.avaje.ebean.Ebean
 import com.avaje.ebean.Query
-import com.github.vilmosnagy.elq.elqcore.AppCtx
+import com.github.vilmosnagy.elq.elqcore.dagger.AppCtx
 import com.github.vilmosnagy.elq.elqcore.interfaces.Predicate
 import java.util.stream.Collector
 
 /**
  * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
-data class ElqStreamImpl<T>  private constructor(
+public data class ElqStreamImpl<T>  private constructor(
         private val clazz: Class<T>,
         private val query: Query<T>
 ) : ElqStream<T> {
@@ -23,11 +23,11 @@ data class ElqStreamImpl<T>  private constructor(
         return query.findCount().toLong()
     }
 
-    override fun <R, A> collect(collector: Collector<in T, A, R>): R = query.findList().stream().collect(collector)
+    override fun <R, A> collect(collector: Collector<T, A, R>): R = query.findList().stream().collect(collector)
 
     override fun filter(predicate: Predicate<T>): ElqStream<T> {
         val parsedLambdaDetails = filterMethodParser.parseFilterMethod(predicate, clazz)
-        query.where(expressionBuilder.equals(parsedLambdaDetails.fieldName, parsedLambdaDetails.value.getValue(predicate)))
+        query.where(parsedLambdaDetails.buildExpression(expressionBuilder, predicate))
         return this
     }
 
@@ -47,6 +47,6 @@ data class ElqStreamImpl<T>  private constructor(
     }
 }
 
-fun <T> createElqStream(clazz: Class<T>): ElqStream<T> {
+public fun <T> createElqStream(clazz: Class<T>): ElqStream<T> {
     return ElqStreamImpl(clazz)
 }

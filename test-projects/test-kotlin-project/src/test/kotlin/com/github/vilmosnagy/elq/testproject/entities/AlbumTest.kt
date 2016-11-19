@@ -5,41 +5,38 @@ import com.github.vilmosnagy.elq.elqcore.interfaces.Predicate
 import com.github.vilmosnagy.elq.elqcore.stream.createElqStream
 import com.github.vilmosnagy.elq.testproject.BaseTest
 import org.junit.Assert.*
-import org.junit.Ignore
-import org.junit.Test
-import java.lang.String
 import java.util.stream.Collectors
 
 /**
  * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
-class AlbumTest: BaseTest() {
+class AlbumTest : BaseTest() {
 
     init {
         feature("Simple stream features (findAny, count, findFirst, findAll) shoould work") {
-            
+
             scenario("should read some album entity from database") {
                 val albums = server.createQuery(Album::class.java).findList()
                 assertNotNull("Albums sucesfully load from database.", albums)
                 assertNotEquals("More than zero albums loaded.", 0, albums.size)
             }
 
-            
+
             scenario("should find any album entity trough stream") {
                 assertNotNull("Some album sucesfully load from database.", createElqStream(Album::class.java).findFirst())
             }
 
-            
+
             scenario("should count elements in table trough stream") {
                 assertEquals("More than zero albums loaded.", 347, createElqStream(Album::class.java).count())
             }
 
-            
+
             scenario("should find first album entity trough stream without ordering") {
                 assertNotNull("Some album sucesfully load from database.", createElqStream(Album::class.java).findAny())
             }
         }
-        
+
         feature("Filtering when primitive attribute equals to contstant should work") {
 
             scenario("filter with simple predicate where id equals constant should work correctly (id load compiled to iconts bytecode)") {
@@ -102,6 +99,48 @@ class AlbumTest: BaseTest() {
                     fail("Album not found by title.")
                 }
             }
+
+            scenario("filter with simple predicate where id less than constant should work correctly") {
+                val album = createElqStream(Album::class.java).filter { it.id < 5 }.collect(Collectors.toList())
+                (album.count { it.title == "For Those About To Rock We Salute You" } == 1) shouldBe true
+                (album.count { it.title == "Balls to the Wall" } == 1) shouldBe true
+                (album.count { it.title == "Restless and Wild" } == 1) shouldBe true
+                (album.count { it.title == "Let There Be Rock" } == 1) shouldBe true
+                (album.all { it.id < 5 }) shouldBe true
+                (album.size == 4) shouldBe true
+            }
+
+            scenario("filter with simple predicate where id less than or equal to constant should work correctly") {
+                val album = createElqStream(Album::class.java).filter { it.id <= 5 }.collect(Collectors.toList())
+                (album.count { it.title == "For Those About To Rock We Salute You" } == 1) shouldBe true
+                (album.count { it.title == "Balls to the Wall" } == 1) shouldBe true
+                (album.count { it.title == "Restless and Wild" } == 1) shouldBe true
+                (album.count { it.title == "Let There Be Rock" } == 1) shouldBe true
+                (album.count { it.title == "Big Ones" } == 1) shouldBe true
+                (album.all { it.id <= 5 }) shouldBe true
+                (album.size == 5) shouldBe true
+            }
+
+            scenario("filter with simple predicate where id greater than constant should work correctly") {
+                val album = createElqStream(Album::class.java).filter { it.id > 343 }.collect(Collectors.toList())
+                (album.count { it.title == "Schubert: The Late String Quartets & String Quintet (3 CD's)" } == 1) shouldBe true
+                (album.count { it.title == "Monteverdi: L'Orfeo" } == 1) shouldBe true
+                (album.count { it.title == "Mozart: Chamber Music" } == 1) shouldBe true
+                (album.count { it.title == "Koyaanisqatsi (Soundtrack from the Motion Picture)" } == 1) shouldBe true
+                (album.all { it.id > 343 }) shouldBe true
+                (album.size == 4) shouldBe true
+            }
+
+            scenario("filter with simple predicate where id greater than or equal to constant should work correctly") {
+                val album = createElqStream(Album::class.java).filter { it.id >= 343 }.collect(Collectors.toList())
+                (album.count { it.title == "Schubert: The Late String Quartets & String Quintet (3 CD's)" } == 1) shouldBe true
+                (album.count { it.title == "Monteverdi: L'Orfeo" } == 1) shouldBe true
+                (album.count { it.title == "Mozart: Chamber Music" } == 1) shouldBe true
+                (album.count { it.title == "Koyaanisqatsi (Soundtrack from the Motion Picture)" } == 1) shouldBe true
+                (album.count { it.title == "Respighi:Pines of Rome" } == 1) shouldBe true
+                (album.all { it.id >= 343 }) shouldBe true
+                (album.size == 5) shouldBe true
+            }
         }
 
         feature("Filtering when Many-To-One attribute equals to final variable should work") {
@@ -135,4 +174,3 @@ class AlbumTest: BaseTest() {
         }
     }
 }
-

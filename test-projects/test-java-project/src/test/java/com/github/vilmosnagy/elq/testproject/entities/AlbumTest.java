@@ -4,13 +4,9 @@ import com.avaje.ebean.Ebean;
 import com.github.vilmosnagy.elq.elqcore.interfaces.Predicate;
 import com.github.vilmosnagy.elq.elqcore.stream.ElqStreamImplKt;
 import com.github.vilmosnagy.elq.testproject.BaseTest;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
@@ -21,29 +17,29 @@ import static org.junit.Assert.*;
 public class AlbumTest extends BaseTest {
 
     @Test
-    public void  should_read_some_album_entity_from_database() {
+    public void should_read_some_album_entity_from_database() {
         List<Album> albums = server.createQuery(Album.class).findList();
         assertNotNull("Albums sucesfully load from database.", albums);
         assertNotEquals("More than zero albums loaded.", 0, albums.size());
     }
 
     @Test
-    public void  should_find_any_album_entity_trough_stream() {
+    public void should_find_any_album_entity_trough_stream() {
         assertNotNull("Some album sucesfully load from database.", ElqStreamImplKt.createElqStream(Album.class).findFirst());
     }
 
     @Test
-    public void  should_count_elements_in_table_trough_stream() {
+    public void should_count_elements_in_table_trough_stream() {
         assertEquals("More than zero albums loaded.", Long.valueOf(347), ElqStreamImplKt.createElqStream(Album.class).count());
     }
 
     @Test
-    public void  should_find_first_album_entity_trough_stream_without_ordering() {
+    public void should_find_first_album_entity_trough_stream_without_ordering() {
         assertNotNull("Some album sucesfully load from database.", ElqStreamImplKt.createElqStream(Album.class).findAny());
     }
 
     @Test
-    public void  filter_with_simple_predicate_where_id_equals_constant_should_work_correctly_when_iload_generated() {
+    public void filter_with_simple_predicate_where_id_equals_constant_should_work_correctly_when_iload_generated() {
         Album album = ElqStreamImplKt.createElqStream(Album.class).filter(it -> it.getId() == 5).findAny();
 
         if (album != null) {
@@ -54,7 +50,7 @@ public class AlbumTest extends BaseTest {
     }
 
     @Test
-    public void  filter_with_simple_predicate_where_id_equals_constant_should_work_correctly_when_bipush_generated() {
+    public void filter_with_simple_predicate_where_id_equals_constant_should_work_correctly_when_bipush_generated() {
         Album album = ElqStreamImplKt.createElqStream(Album.class).filter(it -> it.getId() == 10).findAny();
 
         if (album != null) {
@@ -65,7 +61,7 @@ public class AlbumTest extends BaseTest {
     }
 
     @Test
-    public void  filter_with_simple_predicate_where_id_equals_constant_should_work_correctly_when_sipush_generated() {
+    public void filter_with_simple_predicate_where_id_equals_constant_should_work_correctly_when_sipush_generated() {
         Album album = ElqStreamImplKt.createElqStream(Album.class).filter(it -> it.getId() == 347).findAny();
 
         if (album != null) {
@@ -76,7 +72,7 @@ public class AlbumTest extends BaseTest {
     }
 
     @Test
-    public void  filter_with_simple_predicate_where_title_equals_constant_should_work_correctly() {
+    public void filter_with_simple_predicate_where_title_equals_constant_should_work_correctly() {
         Album album = ElqStreamImplKt.createElqStream(Album.class).filter(it -> it.getTitle().equals("Big Ones")).findAny();
 
         if (album != null) {
@@ -103,7 +99,11 @@ public class AlbumTest extends BaseTest {
 
 
         final List<Album> albums = ElqStreamImplKt.createElqStream(Album.class).filter(new Predicate<Album>() {
-            private void doNotTransformThisBlockToLambdaExpression() { };
+            private void doNotTransformThisBlockToLambdaExpression() {
+            }
+
+            ;
+
             @Override
             public Boolean test(Album album) {
                 doNotTransformThisBlockToLambdaExpression();
@@ -136,6 +136,52 @@ public class AlbumTest extends BaseTest {
         } else {
             fail("Album not found by title.");
         }
+    }
+
+    @Test
+    public void filter_with_simple_predicate_where_id_less_than_constant_should_work_correctly() {
+        List<Album> albums = ElqStreamImplKt.createElqStream(Album.class).filter(it -> it.getId() < 5).collect(Collectors.toList());
+        assertTrue(albums.stream().filter(it -> it.getTitle().equals("For Those About To Rock We Salute You")).count() == 1);
+        assertTrue(albums.stream().filter(it -> it.getTitle().equals("Balls to the Wall")).count() == 1);
+        assertTrue(albums.stream().filter(it -> it.getTitle().equals("Restless and Wild")).count() == 1);
+        assertTrue(albums.stream().filter(it -> it.getTitle().equals("Let There Be Rock")).count() == 1);
+        assertTrue(albums.stream().allMatch(it -> it.getId() < 5));
+        assertTrue(albums.size() == 4);
+    }
+
+    @Test
+    public void filter_with_simple_predicate_where_id_less_than_or_equal_to_constant_should_work_correctly() {
+        List<Album> albums = ElqStreamImplKt.createElqStream(Album.class).filter(it -> it.getId() <= 5).collect(Collectors.toList());
+        assertTrue(albums.stream().filter(it -> it.getTitle().equals("For Those About To Rock We Salute You")).count() == 1);
+        assertTrue(albums.stream().filter(it -> it.getTitle().equals("Balls to the Wall")).count() == 1);
+        assertTrue(albums.stream().filter(it -> it.getTitle().equals("Restless and Wild")).count() == 1);
+        assertTrue(albums.stream().filter(it -> it.getTitle().equals("Let There Be Rock")).count() == 1);
+        assertTrue(albums.stream().filter(it -> it.getTitle().equals("Big Ones")).count() == 1);
+        assertTrue(albums.stream().allMatch(it -> it.getId() <= 5));
+        assertTrue(albums.size() == 5);
+    }
+
+    @Test
+    public void filter_with_simple_predicate_where_id_greater_than_constant_should_work_correctly() {
+        List<Album> albums = ElqStreamImplKt.createElqStream(Album.class).filter(it -> it.getId() > 343).collect(Collectors.toList());
+        assertTrue(albums.stream().filter(it -> it.getTitle().equals("Schubert: The Late String Quartets & String Quintet (3 CD's)")).count() == 1);
+        assertTrue(albums.stream().filter(it -> it.getTitle().equals("Monteverdi: L'Orfeo")).count() == 1);
+        assertTrue(albums.stream().filter(it -> it.getTitle().equals("Mozart: Chamber Music")).count() == 1);
+        assertTrue(albums.stream().filter(it -> it.getTitle().equals("Koyaanisqatsi (Soundtrack from the Motion Picture)")).count() == 1);
+        assertTrue(albums.stream().allMatch(it -> it.getId() > 343));
+        assertTrue(albums.size() == 4);
+    }
+
+    @Test
+    public void filter_with_simple_predicate_where_id_greater_than_or_equal_to_constant_should_work_correctly() {
+        List<Album> albums = ElqStreamImplKt.createElqStream(Album.class).filter(it -> it.getId() >= 343).collect(Collectors.toList());
+        assertTrue(albums.stream().filter(it -> it.getTitle().equals("Schubert: The Late String Quartets & String Quintet (3 CD's)")).count() == 1);
+        assertTrue(albums.stream().filter(it -> it.getTitle().equals("Monteverdi: L'Orfeo")).count() == 1);
+        assertTrue(albums.stream().filter(it -> it.getTitle().equals("Mozart: Chamber Music")).count() == 1);
+        assertTrue(albums.stream().filter(it -> it.getTitle().equals("Koyaanisqatsi (Soundtrack from the Motion Picture)")).count() == 1);
+        assertTrue(albums.stream().filter(it -> it.getTitle().equals("Respighi:Pines of Rome")).count() == 1);
+        assertTrue(albums.stream().allMatch(it -> it.getId() >= 343));
+        assertTrue(albums.size() == 5);
     }
 }
 

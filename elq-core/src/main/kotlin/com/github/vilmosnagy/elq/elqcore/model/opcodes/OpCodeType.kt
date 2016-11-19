@@ -115,6 +115,34 @@ internal enum class OpCodeType(val opCode: Int, val otherByteCount: Int = 0) {
         }
     },
     //</editor-fold>
+    // <editor-fold desc="if_icmplt">
+    if_icmplt(0xA1, 2)  {
+        override fun createNew(followingBytes: List<Int>, bcelClass: JavaClass): OpCode {
+            return OpCode.if_icmplt(followingBytes[1], followingBytes[2])
+        }
+    },
+    // </editor-fold>
+    // <editor-fold desc="if_icmpge">
+    if_icmpge(0xA2, 2)  {
+        override fun createNew(followingBytes: List<Int>, bcelClass: JavaClass): OpCode {
+            return OpCode.if_icmpge(followingBytes[1], followingBytes[2])
+        }
+    },
+    // </editor-fold>
+    // <editor-fold desc="if_icmpgt">
+    if_icmpgt(0xA3, 2)  {
+        override fun createNew(followingBytes: List<Int>, bcelClass: JavaClass): OpCode {
+            return OpCode.if_icmpgt(followingBytes[1], followingBytes[2])
+        }
+    },
+    //</editor-fold>
+    // <editor-fold desc="if_icmple">
+    if_icmple(0xA4, 2)  {
+        override fun createNew(followingBytes: List<Int>, bcelClass: JavaClass): OpCode {
+            return OpCode.if_icmple(followingBytes[1], followingBytes[2])
+        }
+    },
+    //</editor-fold>
     //<editor-fold desc="ifnonnull">
     ifnonnull(0xC7, 2)  {
         override fun createNew(followingBytes: List<Int>, bcelClass: JavaClass): OpCode {
