@@ -5,8 +5,8 @@ import com.github.vilmosnagy.elq.elqcore.interfaces.Predicate
 import com.github.vilmosnagy.elq.elqcore.isStatic
 import com.github.vilmosnagy.elq.elqcore.model.Method
 import com.github.vilmosnagy.elq.elqcore.model.lqexpressions.filter.ExpressionNode
-import com.github.vilmosnagy.elq.elqcore.model.lqexpressions.filter.ParsedFilterLQExpressionInternalNode
 import com.github.vilmosnagy.elq.elqcore.model.lqexpressions.filter.ParsedFilterLQExpressionLeaf
+import com.github.vilmosnagy.elq.elqcore.model.lqexpressions.filter.ParsedFilterLQExpressionNode
 import com.github.vilmosnagy.elq.elqcore.model.statements.GetFieldStatement
 import com.github.vilmosnagy.elq.elqcore.model.statements.MethodCallStatement
 import com.github.vilmosnagy.elq.elqcore.model.statements.Statement
@@ -21,7 +21,7 @@ import javax.inject.Singleton
 import java.lang.reflect.Method as JVMMethod
 
 /**
- * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
+ * @author Vilmos Nagy <vilmos.nagy@outlook.com>
  */
 @Singleton
 internal class LambdaToExpressionService
@@ -63,18 +63,12 @@ internal class LambdaToExpressionService
     }
 
     private fun <T> parseBranchedStatementToFilter(returnStatement: BranchedStatement, entityClazz: Class<T>): Pair<ExpressionNode<T>, Boolean> {
-        val compareStatement = returnStatement.compareStatement
-        val branch01 = returnStatement.branch01
-        val branch02 = returnStatement.branch02
         return if (simpleTrueFalseBranchOnConstantEqualsField(returnStatement, entityClazz)) {
             parseSimpleTrueFalseBranch(entityClazz, returnStatement)
         } else if (multiLevelTrueFalseBranch(returnStatement)) {
-            val secondLevelBranchedStatement = branch01 as? BranchedStatement ?: branch02 as? BranchedStatement ?: TODO()
-            val (leaf01, leaf01Value) = parseSimpleTrueFalseBranch(entityClazz, returnStatement)
-            val (leaf02, leaf02Value) = parseBranchedStatementToFilter(secondLevelBranchedStatement, entityClazz)
-            val logicalType = if (leaf01Value) LogicalType.OR else LogicalType.AND
-            Pair(ParsedFilterLQExpressionInternalNode(leaf01, leaf02, logicalType), leaf01Value)
+            parseMultiLevelTrueFalseBranch(entityClazz, returnStatement)
         } else {
+            val compareStatement = returnStatement.compareStatement
             val v1Eval = compareStatement.v1.evaluate()
             val v2Eval = compareStatement.v2.evaluate()
             if (v1Eval is BranchedStatement && v2Eval is Int) {
@@ -88,6 +82,16 @@ internal class LambdaToExpressionService
                 TODO()
             }
         }
+    }
+
+    private fun <T> parseMultiLevelTrueFalseBranch(entityClazz: Class<T>, returnStatement: BranchedStatement): Pair<ParsedFilterLQExpressionNode<T>, Boolean> {
+        val branch01 = returnStatement.branch01
+        val branch02 = returnStatement.branch02
+        val secondLevelBranchedStatement = branch01 as? BranchedStatement ?: branch02 as? BranchedStatement ?: TODO()
+        val (leaf01, leaf01Value) = parseSimpleTrueFalseBranch(entityClazz, returnStatement)
+        val (leaf02, leaf02Value) = parseBranchedStatementToFilter(secondLevelBranchedStatement, entityClazz)
+        val logicalType = if (leaf01Value) LogicalType.OR else LogicalType.AND
+        return Pair(ParsedFilterLQExpressionNode(leaf01, leaf02, logicalType), leaf01Value)
     }
 
     private fun <T> parseSimpleTrueFalseBranch(entityClazz: Class<T>, returnStatement: BranchedStatement): Pair<ParsedFilterLQExpressionLeaf<T>, Boolean> {
@@ -146,7 +150,7 @@ internal class LambdaToExpressionService
                 .map { p -> evaluateRhsStatement<T>(fieldGetterMethodCall, parsedGetterMethod, p) }
 
         return if (rhsValue.targetMethod.isStatic) {
-            MethodReturnValueProvider(rhsValue.targetMethod, null, parameters)
+            MethodReturnValueProvider(rhsValue.targetMethod, parameters)
         } else {
             TODO()
         }

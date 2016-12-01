@@ -19,8 +19,7 @@ internal data class ParsedFilterLQExpressionLeaf<ENTITY_TYPE> (
             CompareType.LESS_THAN ->                    expressionBuilder.lessThan(fieldName, evaluatedValue)
             CompareType.LESS_THAN_OR_EQUALS ->          expressionBuilder.lessThanOrEquals(fieldName, evaluatedValue)
             CompareType.GREATER_THAN ->                 expressionBuilder.greaterThan(fieldName, evaluatedValue)
-            CompareType.NOT_EQUALS ->                   TODO()
-            CompareType.NON_NULL ->                     TODO()
+            CompareType.NOT_EQUALS ->                   expressionBuilder.notEquals(fieldName, evaluatedValue)
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.github.vilmosnagy.elq.testproject.entities;
 
 import com.avaje.ebean.Ebean;
+import com.avaje.ebean.Expr;
 import com.github.vilmosnagy.elq.elqcore.interfaces.Predicate;
 import com.github.vilmosnagy.elq.elqcore.stream.ElqStreamImplKt;
 import com.github.vilmosnagy.elq.testproject.BaseTest;
@@ -182,6 +183,29 @@ public class AlbumTest extends BaseTest {
         assertTrue(albums.stream().filter(it -> it.getTitle().equals("Respighi:Pines of Rome")).count() == 1);
         assertTrue(albums.stream().allMatch(it -> it.getId() >= 343));
         assertTrue(albums.size() == 5);
+    }
+
+    @Test
+    public void multiple_logical_expressions_connected_by_logical_and_should_be_parsed() {
+        List<Album> expectedAlbums = Ebean.find(Album.class).where().ge("id", 343).eq("title", "Monteverdi: L'Orfeo").findList();
+        List<Album> albums = ElqStreamImplKt.createElqStream(Album.class)
+                .filter(it -> it.getId() >= 343 && it.getTitle().equals("Monteverdi: L'Orfeo"))
+                .collect(Collectors.toList());
+        assertEquals(expectedAlbums, albums);
+    }
+
+    @Test
+    public void multiple_logical_expressions_connected_by_logical_or_should_be_parsed() {
+        List<Album> expectedAlbums = Ebean.find(Album.class).where(Expr.or(
+                Expr.eq("id", 343),
+                Expr.eq("title", "Monteverdi: L'Orfeo")
+        )).findList();
+
+        List<Album> albums = ElqStreamImplKt.createElqStream(Album.class)
+                .filter(it -> it.getId() == 343 || it.getTitle().equals("Monteverdi: L'Orfeo"))
+                .collect(Collectors.toList());
+
+        assertEquals(expectedAlbums, albums);
     }
 }
 
