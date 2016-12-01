@@ -55,4 +55,8 @@ public interface ExpressionBuilder<T> {
      */
     fun greaterThan(fieldName: String, value: Any?): T
 
+    fun  or(lhs: T, rhs: T): T
+
+    fun and(lhs: T, rhs: T): T
+
 }

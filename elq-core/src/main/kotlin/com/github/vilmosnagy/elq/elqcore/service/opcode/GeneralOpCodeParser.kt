@@ -70,10 +70,21 @@ internal open class GeneralOpCodeParser @Inject constructor(
         val branchIfNotJumpedOperations = parseExpressionList(subOpCodeListOnNotJumpingBranch, bcelClass, jvmMethod, ArrayDeque(stack))
         val branchIfJumpedOperations = parseExpressionList(subOpCodeListOnJumpingBranch, bcelClass, jvmMethod, ArrayDeque(stack))
 
-        val compareStatement: CompareStatement = CompareStatement(
-                stack.pop() as Statement.EvaluableStatement<*>,
-                stack.pop() as Statement.EvaluableStatement<*>,
-                opCode.compareType)
+        val compareStatement: CompareStatement
+        // TODO
+        if (opCode is OpCode.BiCompareBranchOperation) {
+            compareStatement = CompareStatement(
+                    stack.pop() as Statement.EvaluableStatement<*>,
+                    stack.pop() as Statement.EvaluableStatement<*>,
+                    opCode.compareType)
+        } else if (opCode is OpCode.UniCompareBranchOperation) {
+            compareStatement = CompareStatement(
+                    stack.pop() as Statement.EvaluableStatement<*>,
+                    Statement.LoadConstant(opCode.staticValue),
+                    opCode.compareType)
+        } else {
+            TODO()
+        }
         stack.push(BranchedStatement(compareStatement, branchIfNotJumpedOperations, branchIfJumpedOperations))
     }
 

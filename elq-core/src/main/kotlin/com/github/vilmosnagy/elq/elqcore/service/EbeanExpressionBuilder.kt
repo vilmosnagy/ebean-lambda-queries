@@ -8,7 +8,8 @@ import com.github.vilmosnagy.elq.elqcore.interfaces.ExpressionBuilder
  * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
 internal open class EbeanExpressionBuilder : ExpressionBuilder<Expression> {
-
+    override fun and(lhs: Expression, rhs: Expression) = Expr.and(lhs, rhs)
+    override fun or(lhs: Expression, rhs: Expression) = Expr.or(lhs, rhs)
     override fun greaterThan(fieldName: String, value: Any?) = Expr.gt(fieldName, value)
     override fun lessThanOrEquals(fieldName: String, value: Any?) = Expr.le(fieldName, value)
     override fun greaterThanOrEquals(fieldName: String, value: Any?) = Expr.ge(fieldName, value)

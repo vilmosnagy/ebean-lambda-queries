@@ -72,7 +72,7 @@ class LambdaToExpressionServiceTest : FeatureSpec() {
                 whenever(methodParser.parseMethod(entityClass, entityIdGetterMethod)).thenReturn(getterMethod)
                 whenever(methodParser.unravelMethodCallChain(getterReturnStatement)).thenReturn(getterReturnStatement)
 
-                val actual = testObj.parseFilterMethod(FunctionAlbumIdEqualsFive(), TestEntity::class.java)
+                val actual = testObj.parseFilterMethod(FunctionAlbumIdEqualsFive(), TestEntity::class.java) as ParsedFilterLQExpressionLeaf
                 actual.fieldName shouldBe "id"
                 actual.value.getValue(FunctionAlbumIdEqualsFive()) shouldBe 5
 
@@ -156,7 +156,7 @@ class LambdaToExpressionServiceTest : FeatureSpec() {
                 whenever(methodParser.parseMethod(entityClass, entityVersionGetterMethod)).thenReturn(getterMethod)
                 whenever(methodParser.unravelMethodCallChain(getterReturnStatement)).thenReturn(getterReturnStatement)
 
-                val actual = testObj.parseFilterMethod(lambda, TestEntity::class.java)
+                val actual = testObj.parseFilterMethod(lambda, TestEntity::class.java) as ParsedFilterLQExpressionLeaf
                 actual.fieldName shouldBe "version"
                 (actual.value as MethodParameterValueProvider<*>).variableIndex shouldBe 1
                 (actual.value as MethodParameterValueProvider<*>).propertyCallChain shouldBe listOf(entityVersionGetterMethod, Date::class.java.getDeclaredMethod("equals", Object::class.java))
@@ -205,7 +205,7 @@ class LambdaToExpressionServiceTest : FeatureSpec() {
                 whenever(methodParser.parseMethod(entityClass, entityVersionGetterMethod)).thenReturn(getterMethod)
                 whenever(methodParser.unravelMethodCallChain(getterReturnStatement)).thenReturn(getterReturnStatement)
 
-                val actual = testObj.parseFilterMethod(lambda, TestEntity::class.java)
+                val actual = testObj.parseFilterMethod(lambda, TestEntity::class.java) as ParsedFilterLQExpressionLeaf
                 actual.fieldName shouldBe "version"
                 actual.value.getValue(lambda) shouldBe date
 

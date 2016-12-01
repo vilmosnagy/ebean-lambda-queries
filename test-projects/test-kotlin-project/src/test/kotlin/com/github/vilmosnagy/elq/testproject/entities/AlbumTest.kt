@@ -1,6 +1,7 @@
 package com.github.vilmosnagy.elq.testproject.entities
 
 import com.avaje.ebean.Ebean
+import com.avaje.ebean.Expr
 import com.github.vilmosnagy.elq.elqcore.interfaces.Predicate
 import com.github.vilmosnagy.elq.elqcore.stream.createElqStream
 import com.github.vilmosnagy.elq.testproject.BaseTest
@@ -99,7 +100,9 @@ class AlbumTest : BaseTest() {
                     fail("Album not found by title.")
                 }
             }
+        }
 
+        feature("Filtering when primitive attribute less than or greater than contstant should work") {
             scenario("filter with simple predicate where id less than constant should work correctly") {
                 val album = createElqStream(Album::class.java).filter { it.id < 5 }.collect(Collectors.toList())
                 (album.count { it.title == "For Those About To Rock We Salute You" } == 1) shouldBe true
@@ -140,6 +143,24 @@ class AlbumTest : BaseTest() {
                 (album.count { it.title == "Respighi:Pines of Rome" } == 1) shouldBe true
                 (album.all { it.id >= 343 }) shouldBe true
                 (album.size == 5) shouldBe true
+            }
+        }
+
+        feature("Multiple simple expressions which connected by logical operations should be parsed") {
+            scenario("Logical `and` should be parsed") {
+                val expectedAlbums = Ebean.find(Album::class.java).where().ge("id", 343).eq("title", "Monteverdi: L'Orfeo").findList()
+                val albums = createElqStream(Album::class.java).filter { it.id >= 343 && it.title == "Monteverdi: L'Orfeo" }.collect(Collectors.toList())
+                albums shouldBe expectedAlbums
+            }
+
+            scenario("Logical `or` should be parsed") {
+                val expectedAlbums = Ebean.find(Album::class.java).where(Expr.or(
+                        Expr.eq("id", 343),
+                        Expr.eq("title", "Monteverdi: L'Orfeo")
+                )).findList()
+
+                val albums = createElqStream(Album::class.java).filter { it.id == 343 || it.title == "Monteverdi: L'Orfeo" }.collect(Collectors.toList())
+                albums shouldBe expectedAlbums
             }
         }
 

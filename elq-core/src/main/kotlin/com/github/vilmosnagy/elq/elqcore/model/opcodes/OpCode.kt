@@ -96,33 +96,50 @@ internal sealed class OpCode(val type: OpCodeType) : EqualsAndHashCode() {
             get() = branchByte1 * 256 + branchByte2
     }
 
-    class if_icmpne(override val branchByte1: Int, override val branchByte2: Int) : OpCode(OpCodeType.if_icmpne), BranchOperation {
+    interface BiCompareBranchOperation
+    interface UniCompareBranchOperation {
+        val staticValue: Any?
+    }
+
+    class if_icmpne(override val branchByte1: Int, override val branchByte2: Int) : OpCode(OpCodeType.if_icmpne), BranchOperation, BiCompareBranchOperation {
         override val compareType = CompareType.NOT_EQUALS
         override val included = includedArgs(type, branchIndex)
     }
 
-    class if_icmplt(override val branchByte1: Int, override val branchByte2: Int) : OpCode(OpCodeType.if_icmplt), BranchOperation {
+    class if_icmplt(override val branchByte1: Int, override val branchByte2: Int) : OpCode(OpCodeType.if_icmplt), BranchOperation, BiCompareBranchOperation {
         override val compareType = CompareType.LESS_THAN
         override val included = includedArgs(type, branchIndex)
     }
 
-    class if_icmpge(override val branchByte1: Int, override val branchByte2: Int) : OpCode(OpCodeType.if_icmpge), BranchOperation {
+    class if_icmpeq(override val branchByte1: Int, override val branchByte2: Int) : OpCode(OpCodeType.if_icmpeq), BranchOperation, BiCompareBranchOperation {
+        override val compareType = CompareType.EQUALS
+        override val included = includedArgs(type, branchIndex)
+    }
+
+    class if_icmpge(override val branchByte1: Int, override val branchByte2: Int) : OpCode(OpCodeType.if_icmpge), BranchOperation, BiCompareBranchOperation {
         override val compareType = CompareType.GREATER_THAN_OR_EQUALS
         override val included = includedArgs(type, branchIndex)
     }
 
-    class if_icmpgt(override val branchByte1: Int, override val branchByte2: Int) : OpCode(OpCodeType.if_icmpgt), BranchOperation {
+    class if_icmpgt(override val branchByte1: Int, override val branchByte2: Int) : OpCode(OpCodeType.if_icmpgt), BranchOperation, BiCompareBranchOperation {
         override val compareType = CompareType.GREATER_THAN
         override val included = includedArgs(type, branchIndex)
     }
 
-    class if_icmple(override val branchByte1: Int, override val branchByte2: Int) : OpCode(OpCodeType.if_icmple), BranchOperation {
+    class ifeq(override val branchByte1: Int, override val branchByte2: Int) : OpCode(OpCodeType.ifeq), BranchOperation, UniCompareBranchOperation {
+        override val staticValue = 0
+        override val compareType = CompareType.EQUALS
+        override val included = includedArgs(type, branchIndex)
+    }
+
+    class if_icmple(override val branchByte1: Int, override val branchByte2: Int) : OpCode(OpCodeType.if_icmple), BranchOperation, BiCompareBranchOperation {
         override val compareType = CompareType.LESS_THAN_OR_EQUALS
         override val included = includedArgs(type, branchIndex)
     }
 
-    class ifnonnull(override val branchByte1: Int, override val branchByte2: Int) : OpCode(OpCodeType.ifnonnull), BranchOperation {
-        override val compareType = CompareType.NON_NULL
+    class ifnonnull(override val branchByte1: Int, override val branchByte2: Int) : OpCode(OpCodeType.ifnonnull), BranchOperation, UniCompareBranchOperation {
+        override val staticValue = null
+        override val compareType = CompareType.NOT_EQUALS
         override val included = includedArgs(type, branchIndex)
     }
 
