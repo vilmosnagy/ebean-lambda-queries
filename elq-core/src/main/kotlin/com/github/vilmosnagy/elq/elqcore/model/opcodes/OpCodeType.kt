@@ -123,6 +123,13 @@ internal enum class OpCodeType(internal val opCode: Int, internal val otherByteC
     },
     // </editor-fold>
     // <editor-fold desc="if_icmpge">
+    if_icmpeq(0x9F, 2)  {
+        override fun createNew(followingBytes: List<Int>, bcelClass: JavaClass): OpCode {
+            return OpCode.if_icmpeq(followingBytes[1], followingBytes[2])
+        }
+    },
+    // </editor-fold>
+    // <editor-fold desc="if_icmpge">
     if_icmpge(0xA2, 2)  {
         override fun createNew(followingBytes: List<Int>, bcelClass: JavaClass): OpCode {
             return OpCode.if_icmpge(followingBytes[1], followingBytes[2])
@@ -133,6 +140,13 @@ internal enum class OpCodeType(internal val opCode: Int, internal val otherByteC
     if_icmpgt(0xA3, 2)  {
         override fun createNew(followingBytes: List<Int>, bcelClass: JavaClass): OpCode {
             return OpCode.if_icmpgt(followingBytes[1], followingBytes[2])
+        }
+    },
+    //</editor-fold>
+    // <editor-fold desc="ifeq">
+    ifeq(0x99, 2)  {
+        override fun createNew(followingBytes: List<Int>, bcelClass: JavaClass): OpCode {
+            return OpCode.ifeq(followingBytes[1], followingBytes[2])
         }
     },
     //</editor-fold>

@@ -22,6 +22,9 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
     - gradle/wrapper/
+before_install:
+  # see bug: https://github.com/travis-ci/travis-ci/issues/6928
+  - export JAVA_HOME=/usr/lib/jvm/java-8-oracle
 install:
   - ./gradlew assemble -PebeanVersion=$EBEAN_VERSION -PdoNotRelease=true
 script:

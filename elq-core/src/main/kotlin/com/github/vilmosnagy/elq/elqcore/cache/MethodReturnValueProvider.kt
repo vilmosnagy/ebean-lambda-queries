@@ -3,17 +3,17 @@ package com.github.vilmosnagy.elq.elqcore.cache
 import java.lang.reflect.Method as JVMMethod
 
 /**
- * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
+ * @author Vilmos Nagy <vilmos.nagy@outlook.com>
  */
-internal data class MethodReturnValueProvider<T> (
+internal data class MethodReturnValueProvider<PREDICATE_TYPE> (
         internal val targetMethod: JVMMethod,
-        internal val objectInvokedOn: Any?,
-        internal val parameters: List<ValueProvider<T>> = listOf()
-) : ValueProvider<T> {
+        internal val parameters: List<ValueProvider<PREDICATE_TYPE>> = listOf()
+) : ValueProvider<PREDICATE_TYPE> {
 
-    override fun getValue(cacheKey: T): Any? {
+    override fun getValue(cacheKey: PREDICATE_TYPE): Any? {
         val evaluatedParameters = parameters.map { p -> p.getValue(cacheKey) }
-        return targetMethod.invoke(objectInvokedOn, *evaluatedParameters.toTypedArray())
+        // TODO do something with non-static methods
+        return targetMethod.invoke(null, *evaluatedParameters.toTypedArray())
     }
 
 }

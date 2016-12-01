@@ -9,8 +9,9 @@ internal data class ParsedFilterLQExpressionLeaf<ENTITY_TYPE> (
         internal val fieldName: String,
         internal val value: ValueProvider<Predicate<ENTITY_TYPE>>,
         internal val compareType: CompareType
-) {
-    fun <EXPRESSION_TYPE> buildExpression(expressionBuilder: ExpressionBuilder<EXPRESSION_TYPE>, predicate: Predicate<ENTITY_TYPE>): EXPRESSION_TYPE {
+) : ExpressionNode<ENTITY_TYPE> {
+
+    override fun <EXPRESSION_TYPE> buildExpression(expressionBuilder: ExpressionBuilder<EXPRESSION_TYPE>, predicate: Predicate<ENTITY_TYPE>): EXPRESSION_TYPE {
         val evaluatedValue = value.getValue(predicate)
         return when(compareType) {
             CompareType.EQUALS ->                       expressionBuilder.equals(fieldName, evaluatedValue)
@@ -18,8 +19,7 @@ internal data class ParsedFilterLQExpressionLeaf<ENTITY_TYPE> (
             CompareType.LESS_THAN ->                    expressionBuilder.lessThan(fieldName, evaluatedValue)
             CompareType.LESS_THAN_OR_EQUALS ->          expressionBuilder.lessThanOrEquals(fieldName, evaluatedValue)
             CompareType.GREATER_THAN ->                 expressionBuilder.greaterThan(fieldName, evaluatedValue)
-            CompareType.NOT_EQUALS ->                   TODO()
-            CompareType.NON_NULL ->                     TODO()
+            CompareType.NOT_EQUALS ->                   expressionBuilder.notEquals(fieldName, evaluatedValue)
         }
     }
 }

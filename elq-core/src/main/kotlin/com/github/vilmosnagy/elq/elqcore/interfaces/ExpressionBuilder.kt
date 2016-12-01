@@ -55,4 +55,28 @@ public interface ExpressionBuilder<T> {
      */
     fun greaterThan(fieldName: String, value: Any?): T
 
+    /**
+     * Should return an expression, representing the following operation: `entity.fieldName != value`
+     *
+     * @param fieldName the name of the entity's field
+     * @param value constant value on the right hand side of the expression
+     */
+    fun notEquals(fieldName: String, value: Any?): T
+
+    /**
+     * Should return an expression, representing the following operation: `lhs || rhs`
+     *
+     * @param lhs Left-Hand side operation of the expression
+     * @param rhs Right-Hand side operation of the expression
+     */
+    fun or(lhs: T, rhs: T): T
+
+    /**
+     * Should return an expression, representing the following operation: `lhs && rhs`
+     *
+     * @param lhs Left-Hand side operation of the expression
+     * @param rhs Right-Hand side operation of the expression
+     */
+    fun and(lhs: T, rhs: T): T
+
 }

@@ -70,7 +70,7 @@ public class LambdaToExpressionServiceJavaTest {
         when(methodParser.parseMethod(entityClass, entityIdGetterMethod)).thenReturn(getterMethod);
         when(methodParser.unravelMethodCallChain(getterReturnStatement)).thenReturn((Statement.EvaluableStatement) getterReturnStatement);
 
-        ParsedFilterLQExpressionLeaf actual = testObj.parseFilterMethod(album -> album.getId() == 5, TestEntity.class);
+        ParsedFilterLQExpressionLeaf<TestEntity> actual = (ParsedFilterLQExpressionLeaf<TestEntity>) testObj.parseFilterMethod(album -> album.getId() == 5, TestEntity.class);
         assertEquals(new ParsedFilterLQExpressionLeaf<>("id", new ConstantValueProvider<>(5), CompareType.EQUALS), actual);
 
         verify(methodParser).unravelMethodCallChain(getterReturnStatement);
