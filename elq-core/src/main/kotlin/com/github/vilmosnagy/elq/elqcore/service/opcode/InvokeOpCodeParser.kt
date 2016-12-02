@@ -5,7 +5,6 @@ package com.github.vilmosnagy.elq.elqcore.service.opcode
 import com.github.vilmosnagy.elq.elqcore.model.opcodes.OpCode
 import com.github.vilmosnagy.elq.elqcore.model.statements.MethodCallStatement
 import com.github.vilmosnagy.elq.elqcore.model.statements.Statement
-import com.github.vilmosnagy.elq.elqcore.service.opcode.callhandlers.MethodCallHandler
 import com.github.vilmosnagy.elq.elqcore.service.opcode.callhandlers.MethodCallHandler.MethodCall
 import com.github.vilmosnagy.elq.elqcore.service.opcode.callhandlers.MethodCallHandler.MethodCallType
 import com.github.vilmosnagy.elq.elqcore.service.opcode.callhandlers.MethodCallHandlerService
@@ -16,13 +15,13 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-internal open class InvokeOpCodeParser @Inject constructor(
+internal class InvokeOpCodeParser @Inject constructor(
         private val methodCallHandlerService: MethodCallHandlerService
 ) {
 
-    open fun parseInvokeOpCode(opCode: OpCode.InvokeFunctionOperation,
-                               targetClassName: String, methodName: String, methodSignature: String,
-                               parameters: List<Statement>): MethodCallStatement<*> {
+    fun parseInvokeOpCode(opCode: OpCode.InvokeFunctionOperation,
+                          targetClassName: String, methodName: String, methodSignature: String,
+                          parameters: List<Statement>): MethodCallStatement<*> {
         val methodParameterList = getMethodParameters(methodSignature)
         val targetClass = Class.forName(targetClassName)
         val targetMethod = targetClass.getDeclaredMethod(methodName, *methodParameterList.toTypedArray())
@@ -46,7 +45,7 @@ internal open class InvokeOpCodeParser @Inject constructor(
         return MethodCall(methodCallType, targetClass, targetMethod)
     }
 
-    open fun getParameterCount(opCode: OpCode.InvokeFunctionOperation, methodSignature: String): Int {
+    fun getParameterCount(opCode: OpCode.InvokeFunctionOperation, methodSignature: String): Int {
         val methodParameterList = getMethodParameters(methodSignature)
 
         return if (opCode is OpCode.invokevirtual) {

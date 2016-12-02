@@ -11,11 +11,14 @@ import com.github.vilmosnagy.elq.elqcore.model.statements.branch.BranchedStateme
 import com.github.vilmosnagy.elq.elqcore.model.statements.branch.CompareStatement;
 import com.github.vilmosnagy.elq.elqcore.model.statements.branch.CompareType;
 import com.github.vilmosnagy.elq.elqcore.test.model.TestEntity;
+import de.jodamob.kotlin.testrunner.KotlinTestRunner;
+import de.jodamob.kotlin.testrunner.OpenedPackages;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.MockitoAnnotations;
 
 import java.util.Collections;
 
@@ -28,7 +31,8 @@ import static org.mockito.Mockito.when;
 /**
  * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(KotlinTestRunner.class)
+@OpenedPackages("com.github.vilmosnagy.elq.elqcore")
 public class LambdaToExpressionServiceJavaTest {
 
     @Mock
@@ -39,6 +43,11 @@ public class LambdaToExpressionServiceJavaTest {
 
     @InjectMocks
     private LambdaToExpressionService testObj;
+
+    @Before
+    public final void before() {
+        MockitoAnnotations.initMocks(this);
+    }
 
     @Test
     public void should_transform_parsed_method_to_fieldName_value_pair_when_expression_is_field_equals_constant() throws NoSuchMethodException {

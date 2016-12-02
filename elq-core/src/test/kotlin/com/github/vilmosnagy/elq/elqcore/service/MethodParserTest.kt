@@ -1,5 +1,6 @@
 package com.github.vilmosnagy.elq.elqcore.service
 
+import com.github.vilmosnagy.elq.elqcore.KotlinTestRunner
 import com.github.vilmosnagy.elq.elqcore.model.Method
 import com.github.vilmosnagy.elq.elqcore.model.opcodes.OpCode
 import com.github.vilmosnagy.elq.elqcore.model.opcodes.OpCodeType
@@ -7,19 +8,20 @@ import com.github.vilmosnagy.elq.elqcore.model.statements.MethodCallStatement
 import com.github.vilmosnagy.elq.elqcore.model.statements.Statement
 import com.github.vilmosnagy.elq.elqcore.service.opcode.GeneralOpCodeParser
 import com.nhaarman.mockito_kotlin.*
+import de.jodamob.kotlin.testrunner.OpenedPackages
 import io.kotlintest.specs.FeatureSpec
 import org.apache.bcel.Repository
-import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
-import org.mockito.runners.MockitoJUnitRunner
 
 /**
  * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
+@RunWith(KotlinTestRunner::class)
+@OpenedPackages("com.github.vilmosnagy.elq.elqcore")
 class MethodParserTest : FeatureSpec() {
 
     @Mock
@@ -71,9 +73,9 @@ class MethodParserTest : FeatureSpec() {
     }
 }
 
-inline fun <reified T : Any> eqf(value: T): T = Mockito.eq(value) ?: value
+internal inline fun <reified T : Any> eqf(value: T): T = Mockito.eq(value) ?: value
 
-class ClassWithSimpleGetter {
+open class ClassWithSimpleGetter {
     fun getVariable(): Any? {
         return 1
     }

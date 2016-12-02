@@ -10,17 +10,17 @@ import javax.inject.Singleton
  * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
 @Singleton
-internal open class MethodCallHandlerService @Inject constructor() {
+internal class MethodCallHandlerService @Inject constructor() {
 
     private val specialMethodCallHandlers: MutableList<MethodCallHandler> = mutableListOf(
             JavaBooleanValueOfMethodCallHandler(), KotlinInternalEqualsMethodCallHandler(), JavaObjectEqualsMethodCallHandler(), KotlinInternalThrowUninitializedPropertyAccessExceptionMethodCallHandler()
     )
 
-    open fun requiresSpecialHandle(methodCall: MethodCall): Boolean {
+    fun requiresSpecialHandle(methodCall: MethodCall): Boolean {
         return specialMethodCallHandlers.any { it.handles(methodCall) }
     }
 
-    open fun handleSpecialMethodCall(methodCall: MethodCall, parameters: List<Statement>): MethodCallStatement<*> {
+    fun handleSpecialMethodCall(methodCall: MethodCall, parameters: List<Statement>): MethodCallStatement<*> {
         val handlers = specialMethodCallHandlers.filter { it.handles(methodCall) }.toList()
         if (handlers.size != 1) {
             throw IllegalStateException()

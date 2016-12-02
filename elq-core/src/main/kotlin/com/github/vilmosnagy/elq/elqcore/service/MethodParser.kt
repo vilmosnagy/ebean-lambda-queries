@@ -18,11 +18,11 @@ import java.lang.reflect.Method as JVMMethod
  * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
 @Singleton
-internal open class MethodParser @Inject constructor(
+internal class MethodParser @Inject constructor(
         private val generalOpCodeParser: GeneralOpCodeParser
 ) {
 
-    open fun parseMethod(classToParse: Class<*>, declaredMethod: JVMMethod): Method {
+    fun parseMethod(classToParse: Class<*>, declaredMethod: JVMMethod): Method {
         val bcelClass = Repository.lookupClass(classToParse.name)
         val bcelMethod = bcelClass.getMethod(declaredMethod)
         val opCodes = codeToOpCodeList(bcelClass, bcelMethod.code)
@@ -34,7 +34,7 @@ internal open class MethodParser @Inject constructor(
         val retList = mutableListOf<OpCode>()
         var i = 0
         val methodCode = method.code.map { if (it < 0) (256 + it.toInt()) else it.toInt() }
-        while(i < methodCode.size) {
+        while (i < methodCode.size) {
             val opcodeType = OpCodeType.values().firstOrNull { it.opCode == methodCode[i] }
 
             @Suppress("FoldInitializerAndIfToElvis")
@@ -50,7 +50,7 @@ internal open class MethodParser @Inject constructor(
     }
 
     // TODO test
-    open fun unravelMethodCallChain(evaluableStatement: Statement.EvaluableStatement<*>): Statement.EvaluableStatement<*> {
+    fun unravelMethodCallChain(evaluableStatement: Statement.EvaluableStatement<*>): Statement.EvaluableStatement<*> {
         var subMethodCallBody = evaluableStatement
         while (subMethodCallBody.value is MethodCallStatement<*>) {
             subMethodCallBody = (subMethodCallBody.value as MethodCallStatement<*>).value.returnStatement as Statement.EvaluableStatement<*>
