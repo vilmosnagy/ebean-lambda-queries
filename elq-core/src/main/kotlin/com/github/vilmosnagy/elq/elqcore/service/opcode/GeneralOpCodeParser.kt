@@ -17,7 +17,7 @@ import java.lang.reflect.Method as JVMMethod
  * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
 @Singleton
-internal open class GeneralOpCodeParser @Inject constructor(
+internal class GeneralOpCodeParser @Inject constructor(
         private val invokeOpCodeParser: InvokeOpCodeParser
 ) {
 
@@ -29,7 +29,7 @@ internal open class GeneralOpCodeParser @Inject constructor(
         }
     }
 
-    open fun parseExpressionList(opCodeList: List<OpCode>, bcelClass: JavaClass, jvmMethod: java.lang.reflect.Method, stack: Deque<Statement> = ArrayDeque()): Statement {
+    fun parseExpressionList(opCodeList: List<OpCode>, bcelClass: JavaClass, jvmMethod: java.lang.reflect.Method, stack: Deque<Statement> = ArrayDeque()): Statement {
         val opCodes = getIndexedOpCodeList(opCodeList)
         var nextIndex = 0
 

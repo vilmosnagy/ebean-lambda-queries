@@ -1,22 +1,25 @@
 package com.github.vilmosnagy.elq.elqcore.model.statements
 
+import com.github.vilmosnagy.elq.elqcore.KotlinTestRunner
 import com.github.vilmosnagy.elq.elqcore.dagger.AppCtx
 import com.github.vilmosnagy.elq.elqcore.model.Method
 import com.github.vilmosnagy.elq.elqcore.service.MethodParser
-import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
+import de.jodamob.kotlin.testrunner.OpenedPackages
 import io.kotlintest.specs.FeatureSpec
-import org.junit.Assert.*
+import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 
 /**
  * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
-class MethodCallStatementTest: FeatureSpec() {
+@RunWith(KotlinTestRunner::class)
+@OpenedPackages("com.github.vilmosnagy.elq.elqcore")
+class MethodCallStatementTest : FeatureSpec() {
 
-    open class A {
-        open fun foo(): Boolean = true
+    private class A {
+        fun foo(): Boolean = true
     }
 
     @Mock
@@ -25,7 +28,7 @@ class MethodCallStatementTest: FeatureSpec() {
     @Mock
     private lateinit var methodParser: MethodParser
 
-    init{
+    init {
         MockitoAnnotations.initMocks(this)
         AppCtx.mockedAppCtx = appCtx
 

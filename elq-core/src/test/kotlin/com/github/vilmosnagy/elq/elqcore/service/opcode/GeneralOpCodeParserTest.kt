@@ -2,25 +2,31 @@
 
 package com.github.vilmosnagy.elq.elqcore.service.opcode
 
+import com.github.vilmosnagy.elq.elqcore.KotlinTestRunner
 import com.github.vilmosnagy.elq.elqcore.model.FunctionIntegerIsFive
 import com.github.vilmosnagy.elq.elqcore.model.opcodes.OpCode.*
 import com.github.vilmosnagy.elq.elqcore.model.statements.MethodCallStatement
 import com.github.vilmosnagy.elq.elqcore.model.statements.Statement
 import com.github.vilmosnagy.elq.elqcore.model.statements.Statement.ReturnStatement
 import com.github.vilmosnagy.elq.elqcore.model.statements.branch.BranchedStatement
-import com.github.vilmosnagy.elq.elqcore.model.statements.branch.CompareType.NOT_EQUALS
 import com.github.vilmosnagy.elq.elqcore.model.statements.branch.CompareStatement
-import com.nhaarman.mockito_kotlin.*
+import com.github.vilmosnagy.elq.elqcore.model.statements.branch.CompareType.NOT_EQUALS
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.spy
+import com.nhaarman.mockito_kotlin.whenever
+import de.jodamob.kotlin.testrunner.OpenedPackages
 import io.kotlintest.specs.FeatureSpec
 import org.apache.bcel.Const
 import org.apache.bcel.Repository
 import org.apache.bcel.classfile.ConstantString
 import org.apache.bcel.classfile.ConstantUtf8
 import org.apache.bcel.classfile.JavaClass
+import org.junit.runner.RunWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
+import java.lang.Integer
 import org.apache.bcel.classfile.Method as BCELMethod
 import java.lang.Boolean as JavaBoolean
 import java.lang.reflect.Method as JVMMethod
@@ -28,6 +34,8 @@ import java.lang.reflect.Method as JVMMethod
 /**
  * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
+@RunWith(KotlinTestRunner::class)
+@OpenedPackages("com.github.vilmosnagy.elq.elqcore")
 class GeneralOpCodeParserTest : FeatureSpec() {
 
     @Mock
@@ -143,7 +151,7 @@ class GeneralOpCodeParserTest : FeatureSpec() {
 }
 
 
-class FakeTestClass {
+internal class FakeTestClass {
     fun returnBoolean(): Boolean = true
     fun returnInt(): Int = 0
 }

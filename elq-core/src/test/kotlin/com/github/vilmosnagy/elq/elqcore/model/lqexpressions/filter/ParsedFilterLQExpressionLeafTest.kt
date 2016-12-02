@@ -1,21 +1,22 @@
 package com.github.vilmosnagy.elq.elqcore.model.lqexpressions.filter
 
+import com.github.vilmosnagy.elq.elqcore.KotlinTestRunner
 import com.github.vilmosnagy.elq.elqcore.cache.ValueProvider
 import com.github.vilmosnagy.elq.elqcore.interfaces.ExpressionBuilder
 import com.github.vilmosnagy.elq.elqcore.interfaces.Predicate
 import com.github.vilmosnagy.elq.elqcore.model.statements.branch.CompareType
-import com.github.vilmosnagy.elq.elqcore.model.statements.branch.LogicalType
 import com.github.vilmosnagy.elq.elqcore.test.model.TestEntity
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import io.kotlintest.specs.FeatureSpec
-import org.junit.Assert.*
+import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 
 /**
  * @author Vilmos Nagy  <vilmos.nagy@outlook.com>
  */
+@RunWith(KotlinTestRunner::class)
 class ParsedFilterLQExpressionLeafTest : FeatureSpec() {
 
     @Mock

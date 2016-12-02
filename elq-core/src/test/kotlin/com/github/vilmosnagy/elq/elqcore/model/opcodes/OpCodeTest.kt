@@ -1,11 +1,14 @@
 package com.github.vilmosnagy.elq.elqcore.model.opcodes
 
+import com.github.vilmosnagy.elq.elqcore.KotlinTestRunner
 import com.nhaarman.mockito_kotlin.mock
 import io.kotlintest.specs.FeatureSpec
+import org.junit.runner.RunWith
 
 /**
  * @author Vilmos Nagy  <vilmos.nagy></vilmos.nagy>@outlook.com>
  */
+@RunWith(KotlinTestRunner::class)
 class OpCodeTest : FeatureSpec() {
 
     init {

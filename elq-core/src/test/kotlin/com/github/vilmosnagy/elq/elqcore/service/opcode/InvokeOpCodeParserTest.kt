@@ -2,15 +2,16 @@
 
 package com.github.vilmosnagy.elq.elqcore.service.opcode
 
+import com.github.vilmosnagy.elq.elqcore.KotlinTestRunner
 import com.github.vilmosnagy.elq.elqcore.model.opcodes.OpCode
 import com.github.vilmosnagy.elq.elqcore.model.statements.MethodCallStatement
 import com.github.vilmosnagy.elq.elqcore.model.statements.Statement
-import com.github.vilmosnagy.elq.elqcore.service.opcode.callhandlers.MethodCallHandler
 import com.github.vilmosnagy.elq.elqcore.service.opcode.callhandlers.MethodCallHandler.MethodCall
 import com.github.vilmosnagy.elq.elqcore.service.opcode.callhandlers.MethodCallHandler.MethodCallType.INVOKE_STATIC
 import com.github.vilmosnagy.elq.elqcore.service.opcode.callhandlers.MethodCallHandlerService
 import com.nhaarman.mockito_kotlin.whenever
 import io.kotlintest.specs.FeatureSpec
+import org.junit.runner.RunWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
@@ -25,6 +26,7 @@ import java.util.*
 /**
  * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
+@RunWith(KotlinTestRunner::class)
 class InvokeOpCodeParserTest : FeatureSpec() {
 
     @Mock
