@@ -1,6 +1,5 @@
 package com.github.vilmosnagy.elq.elqcore.cache
 
-import com.github.vilmosnagy.elq.elqcore.KotlinTestRunner
 import com.github.vilmosnagy.elq.elqcore.interfaces.Predicate
 import io.kotlintest.specs.FeatureSpec
 import org.junit.runner.RunWith
@@ -9,7 +8,6 @@ import org.mockito.MockitoAnnotations
 /**
  * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
-@RunWith(KotlinTestRunner::class)
 class MethodParameterValueProviderTest : FeatureSpec() {
 
     open class Bar {

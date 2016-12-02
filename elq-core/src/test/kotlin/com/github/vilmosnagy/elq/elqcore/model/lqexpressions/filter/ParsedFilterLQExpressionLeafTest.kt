@@ -1,6 +1,5 @@
 package com.github.vilmosnagy.elq.elqcore.model.lqexpressions.filter
 
-import com.github.vilmosnagy.elq.elqcore.KotlinTestRunner
 import com.github.vilmosnagy.elq.elqcore.cache.ValueProvider
 import com.github.vilmosnagy.elq.elqcore.interfaces.ExpressionBuilder
 import com.github.vilmosnagy.elq.elqcore.interfaces.Predicate
@@ -16,7 +15,6 @@ import org.mockito.MockitoAnnotations
 /**
  * @author Vilmos Nagy  <vilmos.nagy@outlook.com>
  */
-@RunWith(KotlinTestRunner::class)
 class ParsedFilterLQExpressionLeafTest : FeatureSpec() {
 
     @Mock
