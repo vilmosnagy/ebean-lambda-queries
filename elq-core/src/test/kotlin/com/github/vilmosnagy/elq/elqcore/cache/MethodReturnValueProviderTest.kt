@@ -1,17 +1,14 @@
 package com.github.vilmosnagy.elq.elqcore.cache
 
-import com.github.vilmosnagy.elq.elqcore.KotlinTestRunner
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import io.kotlintest.specs.FeatureSpec
-import org.junit.runner.RunWith
 import org.mockito.MockitoAnnotations
 import java.util.*
 
 /**
  * @author Vilmos Nagy  <vilmos.nagy@outlook.com>
  */
-@RunWith(KotlinTestRunner::class)
 class MethodReturnValueProviderTest : FeatureSpec() {
 
     init {

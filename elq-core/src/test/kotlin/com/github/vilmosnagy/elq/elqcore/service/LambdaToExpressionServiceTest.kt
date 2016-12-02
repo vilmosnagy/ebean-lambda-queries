@@ -2,7 +2,6 @@
 
 package com.github.vilmosnagy.elq.elqcore.service
 
-import com.github.vilmosnagy.elq.elqcore.KotlinTestRunner
 import com.github.vilmosnagy.elq.elqcore.cache.ConstantValueProvider
 import com.github.vilmosnagy.elq.elqcore.cache.MethodParameterValueProvider
 import com.github.vilmosnagy.elq.elqcore.cache.MethodReturnValueProvider
@@ -21,7 +20,7 @@ import com.github.vilmosnagy.elq.elqcore.model.statements.branch.LogicalType
 import com.github.vilmosnagy.elq.elqcore.test.model.TestEntity
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
-import de.jodamob.kotlin.testrunner.OpenedPackages
+
 import io.kotlintest.specs.FeatureSpec
 import org.junit.runner.RunWith
 import org.mockito.InjectMocks
@@ -32,8 +31,6 @@ import java.util.*
 /**
  * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
-@RunWith(KotlinTestRunner::class)
-@OpenedPackages("com.github.vilmosnagy.elq.elqcore")
 class LambdaToExpressionServiceTest : FeatureSpec() {
 
     @Mock

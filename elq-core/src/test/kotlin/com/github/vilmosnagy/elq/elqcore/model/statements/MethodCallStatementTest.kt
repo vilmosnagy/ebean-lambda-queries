@@ -1,21 +1,17 @@
 package com.github.vilmosnagy.elq.elqcore.model.statements
 
-import com.github.vilmosnagy.elq.elqcore.KotlinTestRunner
+
 import com.github.vilmosnagy.elq.elqcore.dagger.AppCtx
 import com.github.vilmosnagy.elq.elqcore.model.Method
 import com.github.vilmosnagy.elq.elqcore.service.MethodParser
 import com.nhaarman.mockito_kotlin.whenever
-import de.jodamob.kotlin.testrunner.OpenedPackages
 import io.kotlintest.specs.FeatureSpec
-import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 
 /**
  * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
-@RunWith(KotlinTestRunner::class)
-@OpenedPackages("com.github.vilmosnagy.elq.elqcore")
 class MethodCallStatementTest : FeatureSpec() {
 
     private class A {

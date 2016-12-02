@@ -11,11 +11,8 @@ import com.github.vilmosnagy.elq.elqcore.model.statements.branch.BranchedStateme
 import com.github.vilmosnagy.elq.elqcore.model.statements.branch.CompareStatement;
 import com.github.vilmosnagy.elq.elqcore.model.statements.branch.CompareType;
 import com.github.vilmosnagy.elq.elqcore.test.model.TestEntity;
-import de.jodamob.kotlin.testrunner.KotlinTestRunner;
-import de.jodamob.kotlin.testrunner.OpenedPackages;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -31,8 +28,6 @@ import static org.mockito.Mockito.when;
 /**
  * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
-@RunWith(KotlinTestRunner.class)
-@OpenedPackages("com.github.vilmosnagy.elq.elqcore")
 public class LambdaToExpressionServiceJavaTest {
 
     @Mock

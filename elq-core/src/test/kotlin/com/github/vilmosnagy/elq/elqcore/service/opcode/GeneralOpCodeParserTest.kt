@@ -2,7 +2,6 @@
 
 package com.github.vilmosnagy.elq.elqcore.service.opcode
 
-import com.github.vilmosnagy.elq.elqcore.KotlinTestRunner
 import com.github.vilmosnagy.elq.elqcore.model.FunctionIntegerIsFive
 import com.github.vilmosnagy.elq.elqcore.model.opcodes.OpCode.*
 import com.github.vilmosnagy.elq.elqcore.model.statements.MethodCallStatement
@@ -14,7 +13,7 @@ import com.github.vilmosnagy.elq.elqcore.model.statements.branch.CompareType.NOT
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.whenever
-import de.jodamob.kotlin.testrunner.OpenedPackages
+
 import io.kotlintest.specs.FeatureSpec
 import org.apache.bcel.Const
 import org.apache.bcel.Repository
@@ -34,8 +33,6 @@ import java.lang.reflect.Method as JVMMethod
 /**
  * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
-@RunWith(KotlinTestRunner::class)
-@OpenedPackages("com.github.vilmosnagy.elq.elqcore")
 class GeneralOpCodeParserTest : FeatureSpec() {
 
     @Mock

@@ -2,7 +2,6 @@
 
 package com.github.vilmosnagy.elq.elqcore.service.opcode
 
-import com.github.vilmosnagy.elq.elqcore.KotlinTestRunner
 import com.github.vilmosnagy.elq.elqcore.model.opcodes.OpCode
 import com.github.vilmosnagy.elq.elqcore.model.statements.MethodCallStatement
 import com.github.vilmosnagy.elq.elqcore.model.statements.Statement
@@ -26,7 +25,6 @@ import java.util.*
 /**
  * @author Vilmos Nagy {@literal <vilmos.nagy@outlook.com>}
  */
-@RunWith(KotlinTestRunner::class)
 class InvokeOpCodeParserTest : FeatureSpec() {
 
     @Mock
