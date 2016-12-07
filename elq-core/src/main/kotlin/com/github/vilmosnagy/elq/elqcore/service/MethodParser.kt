@@ -49,13 +49,13 @@ internal class MethodParser @Inject constructor(
         return retList
     }
 
-    // TODO test
-    fun unravelMethodCallChain(evaluableStatement: Statement.EvaluableStatement<*>): Statement.EvaluableStatement<*> {
-        var subMethodCallBody = evaluableStatement
-        while (subMethodCallBody.value is MethodCallStatement<*>) {
-            subMethodCallBody = (subMethodCallBody.value as MethodCallStatement<*>).value.returnStatement as Statement.EvaluableStatement<*>
-        }
-        return subMethodCallBody
-    }
+//    // TODO test
+//    fun unravelMethodCallChain(evaluableStatement: Statement.EvaluableStatement<*>): Statement.EvaluableStatement<*> {
+//        var subMethodCallBody = evaluableStatement
+//        while (subMethodCallBody.value is MethodCallStatement<*>) {
+//            subMethodCallBody = (subMethodCallBody.value as MethodCallStatement<*>).value.returnStatement as Statement.EvaluableStatement<*>
+//        }
+//        return subMethodCallBody
+//    }
 
 }

@@ -13,7 +13,7 @@ internal data class MethodCallStatement<out T>(
         internal val parameters: List<Statement> = listOf(),
         internal val returnType: Class<out T>,
         private val evaluatedStatement: Statement? = null
-) : Statement.EvaluableStatement<Method>, Statement.LazyEvaluatedStatement<Method> {
+) : Statement.EvaluableStatement<Method>, Statement.LazyEvaluatedStatement {
 
     override val value: Method by lazy {
         if (evaluatedStatement != null) {

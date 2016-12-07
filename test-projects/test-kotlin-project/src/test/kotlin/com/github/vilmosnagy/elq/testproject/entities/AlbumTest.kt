@@ -164,6 +164,14 @@ class AlbumTest : BaseTest() {
             }
         }
 
+        feature("Filtering trough Many-To-One connections should work") {
+            scenario("Filter on ManyToOne's id field") {
+                val expectedAlbums = Ebean.find(Album::class.java).where().eq("artist.id", 1).findList()
+                val albums = createElqStream(Album::class.java).filter { it.artist.id == 1}.collect(Collectors.toList())
+                albums shouldBe expectedAlbums
+            }
+        }
+
         feature("Filtering when Many-To-One attribute equals to final variable should work") {
             scenario("Filter on ManyToOne with lambda") {
                 val artist = Ebean.find<Artist>(Artist::class.java).where().eq("artistId", 1).findUnique()

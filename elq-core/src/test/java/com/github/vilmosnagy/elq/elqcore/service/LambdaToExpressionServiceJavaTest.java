@@ -34,7 +34,7 @@ public class LambdaToExpressionServiceJavaTest {
     private MethodParser methodParser;
 
     @Mock
-    private EbeanExpressionBuilder expressionBuilder;
+    private JavaPropertyService javaPropertyService;
 
     @InjectMocks
     private LambdaToExpressionService testObj;
@@ -72,11 +72,9 @@ public class LambdaToExpressionServiceJavaTest {
 
         when(methodParser.parseMethod(eq(this.getClass()), any())).thenReturn(parsedMethod);
         when(methodParser.parseMethod(entityClass, entityIdGetterMethod)).thenReturn(getterMethod);
-        when(methodParser.unravelMethodCallChain(getterReturnStatement)).thenReturn((Statement.EvaluableStatement) getterReturnStatement);
 
         ParsedFilterLQExpressionLeaf<TestEntity> actual = (ParsedFilterLQExpressionLeaf<TestEntity>) testObj.parseFilterMethod(album -> album.getId() == 5, TestEntity.class);
         assertEquals(new ParsedFilterLQExpressionLeaf<>("id", new ConstantValueProvider<>(5), CompareType.EQUALS), actual);
 
-        verify(methodParser).unravelMethodCallChain(getterReturnStatement);
     }
 }

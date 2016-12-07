@@ -8,6 +8,7 @@ import com.github.vilmosnagy.elq.elqcore.cache.MethodReturnValueProvider
 import com.github.vilmosnagy.elq.elqcore.interfaces.Predicate
 import com.github.vilmosnagy.elq.elqcore.model.FunctionAlbumIdEqualsFive
 import com.github.vilmosnagy.elq.elqcore.model.Method
+import com.github.vilmosnagy.elq.elqcore.model.lqexpressions.field.FieldReference
 import com.github.vilmosnagy.elq.elqcore.model.lqexpressions.filter.ParsedFilterLQExpressionLeaf
 import com.github.vilmosnagy.elq.elqcore.model.lqexpressions.filter.ParsedFilterLQExpressionNode
 import com.github.vilmosnagy.elq.elqcore.model.statements.GetFieldStatement
@@ -37,7 +38,7 @@ class LambdaToExpressionServiceTest : FeatureSpec() {
     private lateinit var methodParser: MethodParser
 
     @Mock
-    private lateinit var expressionBuilder: EbeanExpressionBuilder
+    private lateinit var propertyService: JavaPropertyService
 
     @InjectMocks
     private lateinit var testObj: LambdaToExpressionService
@@ -74,13 +75,10 @@ class LambdaToExpressionServiceTest : FeatureSpec() {
 
                 whenever(methodParser.parseMethod(lambdaClass, lambdaMethod)).thenReturn(parsedMethod)
                 whenever(methodParser.parseMethod(entityClass, entityIdGetterMethod)).thenReturn(getterMethod)
-                whenever(methodParser.unravelMethodCallChain(getterReturnStatement)).thenReturn(getterReturnStatement)
 
                 val actual = testObj.parseFilterMethod(FunctionAlbumIdEqualsFive(), TestEntity::class.java) as ParsedFilterLQExpressionLeaf
                 actual.fieldName shouldBe "id"
                 actual.value.getValue(FunctionAlbumIdEqualsFive()) shouldBe 5
-
-                verify(methodParser).unravelMethodCallChain(getterReturnStatement)
             }
 
             scenario("should transform parsed method (`getField().equals(String.valueOf(constant))`) to expressionNode") {
@@ -119,12 +117,10 @@ class LambdaToExpressionServiceTest : FeatureSpec() {
 
                 whenever(methodParser.parseMethod(lambdaClass, lambdaMethod)).thenReturn(parsedMethod)
                 whenever(methodParser.parseMethod(entityClass, entityTitleGetterMethod)).thenReturn(getterMethod)
-                whenever(methodParser.unravelMethodCallChain(getterReturnStatement)).thenReturn(getterReturnStatement)
 
                 val actual = testObj.parseFilterMethod(lambda, TestEntity::class.java)
                 actual shouldBe ParsedFilterLQExpressionLeaf<TestEntity>("title", MethodReturnValueProvider(stringValueOfMethod, listOf(ConstantValueProvider("Gordon Freeman"))), CompareType.EQUALS)
 
-                verify(methodParser).unravelMethodCallChain(getterReturnStatement)
             }
 
             scenario("should transform parsed method (`getField().equals(variable)` - and capture variable in method call) to expressionNode") {
@@ -158,14 +154,12 @@ class LambdaToExpressionServiceTest : FeatureSpec() {
 
                 whenever(methodParser.parseMethod(lambdaClass, lambdaMethod)).thenReturn(parsedMethod)
                 whenever(methodParser.parseMethod(entityClass, entityVersionGetterMethod)).thenReturn(getterMethod)
-                whenever(methodParser.unravelMethodCallChain(getterReturnStatement)).thenReturn(getterReturnStatement)
+                whenever(propertyService.parsePropertyChainToGetters(FieldReference(TestEntity::class.java, "version", null))).thenReturn(listOf(entityVersionGetterMethod))
 
                 val actual = testObj.parseFilterMethod(lambda, TestEntity::class.java) as ParsedFilterLQExpressionLeaf
                 actual.fieldName shouldBe "version"
                 (actual.value as MethodParameterValueProvider<*>).variableIndex shouldBe 1
                 actual.value.propertyCallChain shouldBe listOf(entityVersionGetterMethod, Date::class.java.getDeclaredMethod("equals", Object::class.java))
-
-                verify(methodParser).unravelMethodCallChain(getterReturnStatement)
             }
 
             scenario("should transform parsed method (`getField().equals(field in anonym class)` and get field from anonym class) to expressionNode") {
@@ -207,13 +201,11 @@ class LambdaToExpressionServiceTest : FeatureSpec() {
 
                 whenever(methodParser.parseMethod(lambdaClass, lambdaMethod)).thenReturn(parsedMethod)
                 whenever(methodParser.parseMethod(entityClass, entityVersionGetterMethod)).thenReturn(getterMethod)
-                whenever(methodParser.unravelMethodCallChain(getterReturnStatement)).thenReturn(getterReturnStatement)
 
                 val actual = testObj.parseFilterMethod(lambda, TestEntity::class.java) as ParsedFilterLQExpressionLeaf
                 actual.fieldName shouldBe "version"
                 actual.value.getValue(lambda) shouldBe date
 
-                verify(methodParser).unravelMethodCallChain(getterReturnStatement)
             }
 
             scenario("should transform parsed method (`getField().equals(constant) && getAnotherField().equals(otherConstant)`) to expressionNode") {
@@ -264,8 +256,6 @@ class LambdaToExpressionServiceTest : FeatureSpec() {
                 whenever(methodParser.parseMethod(lambdaClass, lambdaMethod)).thenReturn(parsedMethod)
                 whenever(methodParser.parseMethod(entityClass, entityIdGetterMethod)).thenReturn(getIdFieldMethod)
                 whenever(methodParser.parseMethod(entityClass, entityTitleGetterMethod)).thenReturn(getTitleFieldMethod)
-                whenever(methodParser.unravelMethodCallChain(getIdFieldReturn)).thenReturn(getIdFieldReturn)
-                whenever(methodParser.unravelMethodCallChain(getTitleFieldReturn)).thenReturn(getTitleFieldReturn)
 
                 val actual = testObj.parseFilterMethod(FunctionAlbumIdEqualsFive(), TestEntity::class.java)
                 val expected = ParsedFilterLQExpressionNode<TestEntity>(
@@ -276,7 +266,6 @@ class LambdaToExpressionServiceTest : FeatureSpec() {
 
                 actual shouldBe expected
 
-                verify(methodParser).unravelMethodCallChain(getIdFieldReturn)
             }
         }
     }

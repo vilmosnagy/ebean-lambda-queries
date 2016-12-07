@@ -1,5 +1,6 @@
 package com.github.vilmosnagy.elq.elqcore.model.statements
 
+import com.github.vilmosnagy.elq.elqcore.model.statements.branch.BranchedStatement
 import com.github.vilmosnagy.elq.elqcore.model.statements.branch.CompareType
 
 /**
@@ -9,6 +10,14 @@ internal interface Statement {
 
     fun evaluate(): Any? {
         return this;
+    }
+
+    fun deepEvaluate(): Any? {
+        val evaluated = evaluate()
+        return when(evaluated) {
+            is BranchedStatement -> return evaluated.evaluateIfStraightForward().evaluate()
+            else -> evaluated
+        }
     }
 
     interface EvaluableStatement<out T> : Statement {
@@ -23,7 +32,7 @@ internal interface Statement {
         }
     }
 
-    interface LazyEvaluatedStatement<T>: EvaluableStatement<T>
+    interface LazyEvaluatedStatement : Statement
 
     data class LoadConstant<out T>(override val value: T) : EvaluableStatement<T>
 
