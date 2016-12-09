@@ -22,7 +22,6 @@ import java.util.Collections;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -50,6 +49,9 @@ public class LambdaToExpressionServiceJavaTest {
         Class<TestEntity> entityClass = TestEntity.class;
         java.lang.reflect.Method entityIdGetterMethod = TestEntity.class.getDeclaredMethod("getId");
 
+        Statement getFieldStatement = new GetFieldStatement(TestEntity.class, "id");
+        Statement.EvaluableStatement<?> getterReturnStatement = new Statement.ReturnStatement<>(getFieldStatement);
+
         Statement returnedStatement = new BranchedStatement(
                 new CompareStatement(
                         new Statement.LoadConstant<>(5),
@@ -57,15 +59,14 @@ public class LambdaToExpressionServiceJavaTest {
                                 entityClass,
                                 entityIdGetterMethod,
                                 Collections.singletonList(new Statement.LoadVariable(1)),
-                                java.lang.Integer.TYPE, null
+                                java.lang.Integer.TYPE,
+                                new Method(entityIdGetterMethod, getterReturnStatement)
                         ),
                         CompareType.NOT_EQUALS
                 ),
                 new Statement.ReturnStatement<>(new Statement.LoadConstant<>(true)),
                 new Statement.ReturnStatement<>(new Statement.LoadConstant<>(false))
         );
-        Statement getFieldStatement = new GetFieldStatement(TestEntity.class, "id");
-        Statement.EvaluableStatement<?> getterReturnStatement = new Statement.ReturnStatement<>(getFieldStatement);
 
         Method getterMethod = new Method(entityIdGetterMethod, getterReturnStatement);
         Method parsedMethod = new Method(lambdaMethod, returnedStatement);

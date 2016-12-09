@@ -19,11 +19,8 @@ import com.github.vilmosnagy.elq.elqcore.model.statements.branch.CompareStatemen
 import com.github.vilmosnagy.elq.elqcore.model.statements.branch.CompareType
 import com.github.vilmosnagy.elq.elqcore.model.statements.branch.LogicalType
 import com.github.vilmosnagy.elq.elqcore.test.model.TestEntity
-import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
-
 import io.kotlintest.specs.FeatureSpec
-import org.junit.runner.RunWith
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
@@ -53,6 +50,9 @@ class LambdaToExpressionServiceTest : FeatureSpec() {
                 val entityClass = TestEntity::class.java
                 val entityIdGetterMethod = TestEntity::class.java.getDeclaredMethod("getId")
 
+
+                val getFieldStatement = GetFieldStatement(TestEntity::class.java, "id")
+                val getterReturnStatement = Statement.ReturnStatement(getFieldStatement)
                 val returnedStatement = BranchedStatement(
                         CompareStatement(
                                 Statement.LoadConstant(5),
@@ -60,15 +60,14 @@ class LambdaToExpressionServiceTest : FeatureSpec() {
                                         entityClass,
                                         entityIdGetterMethod,
                                         listOf(),
-                                        java.lang.Integer.TYPE, null
+                                        java.lang.Integer.TYPE,
+                                        Method(entityIdGetterMethod, getterReturnStatement)
                                 ),
                                 CompareType.NOT_EQUALS
                         ),
                         Statement.ReturnStatement(Statement.LoadConstant(true)),
                         Statement.ReturnStatement(Statement.LoadConstant(false))
                 )
-                val getFieldStatement = GetFieldStatement(TestEntity::class.java, "id")
-                val getterReturnStatement = Statement.ReturnStatement(getFieldStatement)
 
                 val getterMethod = Method(entityIdGetterMethod, getterReturnStatement)
                 val parsedMethod = Method(lambdaMethod, returnedStatement)
@@ -90,27 +89,29 @@ class LambdaToExpressionServiceTest : FeatureSpec() {
                 val entityTitleGetterMethod = TestEntity::class.java.getDeclaredMethod("getTitle")
                 val stringValueOfMethod = java.lang.String::class.java.getDeclaredMethod("valueOf", Object::class.java)
 
+                val getFieldStatement = GetFieldStatement(TestEntity::class.java, "title")
+                val getterReturnStatement = Statement.ReturnStatement(getFieldStatement)
                 val returnedStatement = BranchedStatement(
                         CompareStatement(
                                 MethodCallStatement(
                                         java.lang.String::class.java,
                                         stringValueOfMethod,
                                         listOf(Statement.LoadConstant("Gordon Freeman")),
-                                        java.lang.String::class.java
+                                        java.lang.String::class.java,
+                                        Method(stringValueOfMethod, Statement.ReturnStatement(Statement.LoadConstant("Gordon Freeman")))
                                 ),
                                 MethodCallStatement(
                                         entityClass,
                                         entityTitleGetterMethod,
                                         listOf(),
-                                        java.lang.String::class.java
+                                        java.lang.String::class.java,
+                                        Method(entityTitleGetterMethod, getterReturnStatement)
                                 ),
                                 CompareType.NOT_EQUALS
                         ),
                         Statement.ReturnStatement(Statement.LoadConstant(true)),
                         Statement.ReturnStatement(Statement.LoadConstant(false))
                 )
-                val getFieldStatement = GetFieldStatement(TestEntity::class.java, "title")
-                val getterReturnStatement = Statement.ReturnStatement(getFieldStatement)
 
                 val getterMethod = Method(entityTitleGetterMethod, getterReturnStatement)
                 val parsedMethod = Method(lambdaMethod, returnedStatement)
@@ -132,6 +133,8 @@ class LambdaToExpressionServiceTest : FeatureSpec() {
                 val entityClass = TestEntity::class.java
                 val entityVersionGetterMethod = TestEntity::class.java.getDeclaredMethod("getVersion")
 
+                val getFieldStatement = GetFieldStatement(TestEntity::class.java, "version")
+                val getterReturnStatement = Statement.ReturnStatement(getFieldStatement)
                 val returnedStatement = BranchedStatement(
                         CompareStatement(
                                 Statement.LoadVariable(1),
@@ -139,15 +142,14 @@ class LambdaToExpressionServiceTest : FeatureSpec() {
                                         entityClass,
                                         entityVersionGetterMethod,
                                         listOf(),
-                                        Date::class.java
+                                        Date::class.java,
+                                        Method(entityVersionGetterMethod, getterReturnStatement)
                                 ),
                                 CompareType.NOT_EQUALS
                         ),
                         Statement.ReturnStatement(Statement.LoadConstant(true)),
                         Statement.ReturnStatement(Statement.LoadConstant(false))
                 )
-                val getFieldStatement = GetFieldStatement(TestEntity::class.java, "version")
-                val getterReturnStatement = Statement.ReturnStatement(getFieldStatement)
 
                 val getterMethod = Method(entityVersionGetterMethod, getterReturnStatement)
                 val parsedMethod = Method(lambdaMethod, returnedStatement)
@@ -179,6 +181,8 @@ class LambdaToExpressionServiceTest : FeatureSpec() {
                 val entityClass = TestEntity::class.java
                 val entityVersionGetterMethod = TestEntity::class.java.getDeclaredMethod("getVersion")
 
+                val getFieldStatement = GetFieldStatement(TestEntity::class.java, "version")
+                val getterReturnStatement = Statement.ReturnStatement(getFieldStatement)
                 val returnedStatement = BranchedStatement(
                         CompareStatement(
                                 GetFieldStatement(lambdaClass, "localDate"),
@@ -186,15 +190,14 @@ class LambdaToExpressionServiceTest : FeatureSpec() {
                                         entityClass,
                                         entityVersionGetterMethod,
                                         listOf(),
-                                        Date::class.java
+                                        Date::class.java,
+                                        Method(entityVersionGetterMethod, getterReturnStatement)
                                 ),
                                 CompareType.NOT_EQUALS
                         ),
                         Statement.ReturnStatement(Statement.LoadConstant(true)),
                         Statement.ReturnStatement(Statement.LoadConstant(false))
                 )
-                val getFieldStatement = GetFieldStatement(TestEntity::class.java, "version")
-                val getterReturnStatement = Statement.ReturnStatement(getFieldStatement)
 
                 val getterMethod = Method(entityVersionGetterMethod, getterReturnStatement)
                 val parsedMethod = Method(lambdaMethod, returnedStatement)
@@ -215,13 +218,22 @@ class LambdaToExpressionServiceTest : FeatureSpec() {
                 val entityIdGetterMethod = TestEntity::class.java.getDeclaredMethod("getId")
                 val entityTitleGetterMethod = TestEntity::class.java.getDeclaredMethod("getTitle")
 
+                val getIdFieldStatement = GetFieldStatement(TestEntity::class.java, "id")
+                val getIdFieldReturn = Statement.ReturnStatement(getIdFieldStatement)
+                val getIdFieldMethod = Method(entityIdGetterMethod, getIdFieldReturn)
+
+                val getTitleFieldStatement = GetFieldStatement(TestEntity::class.java, "title")
+                val getTitleFieldReturn = Statement.ReturnStatement(getTitleFieldStatement)
+                val getTitleFieldMethod = Method(entityTitleGetterMethod, getTitleFieldReturn)
+
                 val secondHalfOfLogicalOperation = BranchedStatement(
                         CompareStatement(
                                 MethodCallStatement(
                                         entityClass,
                                         entityTitleGetterMethod,
                                         listOf(),
-                                        java.lang.String::class.java, null
+                                        java.lang.String::class.java,
+                                        getTitleFieldMethod
                                 ),
                                 Statement.LoadConstant("Some title"),
                                 CompareType.EQUALS
@@ -236,20 +248,15 @@ class LambdaToExpressionServiceTest : FeatureSpec() {
                                         entityClass,
                                         entityIdGetterMethod,
                                         listOf(),
-                                        java.lang.Integer.TYPE, null
+                                        java.lang.Integer.TYPE,
+                                        getIdFieldMethod
                                 ),
                                 CompareType.NOT_EQUALS
                         ),
                         secondHalfOfLogicalOperation,
                         Statement.ReturnStatement(Statement.LoadConstant(false))
                 )
-                val getIdFieldStatement = GetFieldStatement(TestEntity::class.java, "id")
-                val getIdFieldReturn = Statement.ReturnStatement(getIdFieldStatement)
-                val getIdFieldMethod = Method(entityIdGetterMethod, getIdFieldReturn)
 
-                val getTitleFieldStatement = GetFieldStatement(TestEntity::class.java, "title")
-                val getTitleFieldReturn = Statement.ReturnStatement(getTitleFieldStatement)
-                val getTitleFieldMethod = Method(entityTitleGetterMethod, getTitleFieldReturn)
 
                 val parsedMethod = Method(lambdaMethod, fullReturnedStatement)
 

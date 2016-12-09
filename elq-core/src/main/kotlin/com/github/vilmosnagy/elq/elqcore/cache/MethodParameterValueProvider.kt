@@ -14,9 +14,10 @@ internal data class MethodParameterValueProvider<T>(internal val variableIndex: 
     override fun getValue(cacheKey: Predicate<T>): Any? {
         val (proxiedInstance, interceptorChain) = getProxiedInstance<T>(propertyCallChain)
         cacheKey.test(proxiedInstance)
-        return interceptorChain.getLastCapturedArguments()?.get(variableIndex) ?: null
+        return interceptorChain.getLastCapturedArguments()?.get(variableIndex)
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun <T> getProxiedInstance(propertyCallChain: List<JVMMethod>): MethodCallChainProxies<T> {
         val proxiedClass: Class<T> = propertyCallChain[0].declaringClass as Class<T>
         val interceptor = ArgumentFromPropertyCallChainInterceptor(propertyCallChain)
