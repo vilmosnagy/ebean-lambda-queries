@@ -1,4 +1,5 @@
-package com.github.vilmosnagy.elq.testproject.entities;
+package com.github.vilmosnagy.elq.testproject.entites;
+
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

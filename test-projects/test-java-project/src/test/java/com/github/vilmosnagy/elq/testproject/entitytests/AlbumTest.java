@@ -1,10 +1,12 @@
-package com.github.vilmosnagy.elq.testproject.entities;
+package com.github.vilmosnagy.elq.testproject.entitytests;
 
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.Expr;
 import com.github.vilmosnagy.elq.elqcore.interfaces.Predicate;
 import com.github.vilmosnagy.elq.elqcore.stream.ElqStreamImplKt;
 import com.github.vilmosnagy.elq.testproject.BaseTest;
+import com.github.vilmosnagy.elq.testproject.entites.Album;
+import com.github.vilmosnagy.elq.testproject.entites.Artist;
 import org.junit.Test;
 
 import java.util.List;
@@ -84,6 +86,7 @@ public class AlbumTest extends BaseTest {
     }
 
     @Test
+    // todo
     public void one_to_many_filters_should_work_when_equals_called_on_attribute_with_lambda() {
         final Artist artist = Ebean.find(Artist.class).where().eq("artistId", 1).findUnique();
         final List<Album> expected = Ebean.find(Album.class).where().eq("artist", artist).findList();
@@ -205,6 +208,13 @@ public class AlbumTest extends BaseTest {
                 .filter(it -> it.getId() == 343 || it.getTitle().equals("Monteverdi: L'Orfeo"))
                 .collect(Collectors.toList());
 
+        assertEquals(expectedAlbums, albums);
+    }
+
+    @Test
+    public void filter_trough_ManyToOnes_connection_on_id_field() {
+        List<Album> expectedAlbums = Ebean.find(Album.class).where().eq("artist.id", 1).findList();
+        List<Album> albums = ElqStreamImplKt.createElqStream(Album.class).filter(it -> it.getArtist().getId() == 1).collect(Collectors.toList());
         assertEquals(expectedAlbums, albums);
     }
 }
