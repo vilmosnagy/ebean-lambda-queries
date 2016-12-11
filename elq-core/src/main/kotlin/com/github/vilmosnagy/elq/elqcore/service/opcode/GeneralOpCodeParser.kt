@@ -74,12 +74,12 @@ internal class GeneralOpCodeParser @Inject constructor(
         // TODO
         if (opCode is OpCode.BiCompareBranchOperation) {
             compareStatement = CompareStatement(
-                    stack.pop() as Statement.EvaluableStatement<*>,
-                    stack.pop() as Statement.EvaluableStatement<*>,
+                    stack.pop() as Statement,
+                    stack.pop() as Statement,
                     opCode.compareType)
         } else if (opCode is OpCode.UniCompareBranchOperation) {
             compareStatement = CompareStatement(
-                    stack.pop() as Statement.EvaluableStatement<*>,
+                    stack.pop() as Statement,
                     Statement.LoadConstant(opCode.staticValue),
                     opCode.compareType)
         } else {
@@ -138,7 +138,7 @@ internal class GeneralOpCodeParser @Inject constructor(
     private fun getValueFromStackElement(stackElement: Statement): Any? = when (stackElement) {
         is Statement.LoadConstant<*> -> stackElement.value
         is Statement.LoadVariable -> stackElement
-        is Statement.LazyEvaluatedStatement<*> -> stackElement
+        is Statement.LazyEvaluatedStatement -> stackElement
         is GetFieldStatement -> stackElement
         else -> TODO()
     }

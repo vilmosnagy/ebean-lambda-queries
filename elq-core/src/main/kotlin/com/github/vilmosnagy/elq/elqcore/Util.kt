@@ -40,3 +40,6 @@ internal fun <E> Deque<E>.pop(methodCount: Int): List<E> {
 
 internal val Method.isStatic: Boolean
     get() = Modifier.isStatic(modifiers)
+
+internal val Method.isNonStatic: Boolean
+    get() = !Modifier.isStatic(modifiers)

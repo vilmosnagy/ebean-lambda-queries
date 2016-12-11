@@ -2,8 +2,10 @@ package com.github.vilmosnagy.elq.elqcore.service
 
 import com.github.vilmosnagy.elq.elqcore.cache.*
 import com.github.vilmosnagy.elq.elqcore.interfaces.Predicate
+import com.github.vilmosnagy.elq.elqcore.isNonStatic
 import com.github.vilmosnagy.elq.elqcore.isStatic
 import com.github.vilmosnagy.elq.elqcore.model.Method
+import com.github.vilmosnagy.elq.elqcore.model.lqexpressions.field.FieldReference
 import com.github.vilmosnagy.elq.elqcore.model.lqexpressions.filter.ExpressionNode
 import com.github.vilmosnagy.elq.elqcore.model.lqexpressions.filter.ParsedFilterLQExpressionLeaf
 import com.github.vilmosnagy.elq.elqcore.model.lqexpressions.filter.ParsedFilterLQExpressionNode
@@ -26,7 +28,8 @@ import java.lang.reflect.Method as JVMMethod
 @Singleton
 internal class LambdaToExpressionService
 @Inject constructor(
-        private val methodParser: MethodParser
+        private val methodParser: MethodParser,
+        private val propertyService: JavaPropertyService
 ) {
 
     fun <T> parseFilterMethod(predicate: Predicate<T>, entityClazz: Class<T>): ExpressionNode<T> {
@@ -98,11 +101,11 @@ internal class LambdaToExpressionService
         val (compareType, branch01Value) = getCompareTypeAndNegateIfNecessary(returnStatement)
         val v1 = returnStatement.compareStatement.v1
         val v2 = returnStatement.compareStatement.v2
-        val fieldGetterMethod = getFieldReferenceFromComparedValues(v1, v2, entityClazz) ?: TODO()
-        val rhsValue = if (fieldGetterMethod == v1) v2 else v1
-        val (parsedFieldGetterMethod, propertyName) = getFieldReferenceFromGetterMethod(fieldGetterMethod)
-        val evaluatedRhsValue = evaluateRhsStatement<T>(fieldGetterMethod, parsedFieldGetterMethod, rhsValue)
-        return Pair(ParsedFilterLQExpressionLeaf(fieldName = propertyName, value = evaluatedRhsValue, compareType = compareType), branch01Value)
+        val (fieldReference, fieldReferencingBranch) = getFieldReferenceFromComparedValues(v1, v2, entityClazz) ?: TODO()
+        val rhsValue = if (fieldReferencingBranch == v1) v2 else v1
+        // val (parsedFieldGetterMethod, propertyName) = getFieldReferenceFromGetterMethod(fieldGetterMethod)
+        val evaluatedRhsValue = evaluateRhsStatement<T>(fieldReference, rhsValue)
+        return Pair(ParsedFilterLQExpressionLeaf(fieldName = fieldReference.fullReference, value = evaluatedRhsValue, compareType = compareType), branch01Value)
     }
 
     private fun multiLevelTrueFalseBranch(returnStatement: BranchedStatement): Boolean {
@@ -133,21 +136,21 @@ internal class LambdaToExpressionService
     private fun simpleTrueFalseBranch(returnStatement: BranchedStatement) = (listOf(returnStatement.branch01.evaluate(), returnStatement.branch02.evaluate()).containsAll(listOf(true, false))
             && returnStatement.branch01.evaluate() != returnStatement.branch02.evaluate())
 
-    private fun <T> evaluateRhsStatement(fieldGetterMethodCall: MethodCallStatement<*>, parsedGetterMethod: Method, rhsValue: Statement): ValueProvider<Predicate<T>> {
+    private fun <T> evaluateRhsStatement(fieldReference: FieldReference, rhsValue: Statement): ValueProvider<Predicate<T>> {
         val evaluatedRhsValue: ValueProvider<Predicate<T>> = when (rhsValue) {
             is Statement.LoadConstant<*> -> ConstantValueProvider<Predicate<T>>(rhsValue.value)
-            is Statement.LoadVariable -> captureVariableFromMethodCall<T>(rhsValue, fieldGetterMethodCall, parsedGetterMethod)
+            is Statement.LoadVariable -> captureVariableFromMethodCall<T>(rhsValue, fieldReference)
             is GetFieldStatement -> FieldValueProvider(rhsValue.fieldName)
-            is MethodCallStatement<*> -> evaluateMethodCall(rhsValue, fieldGetterMethodCall, parsedGetterMethod)
+            is MethodCallStatement<*> -> evaluateMethodCall(rhsValue, fieldReference)
             else -> TODO()
         }
         return evaluatedRhsValue
     }
 
-    private fun <T> evaluateMethodCall(rhsValue: MethodCallStatement<*>, fieldGetterMethodCall: MethodCallStatement<*>, parsedGetterMethod: Method): ValueProvider<Predicate<T>> {
+    private fun <T> evaluateMethodCall(rhsValue: MethodCallStatement<*>, fieldReference: FieldReference): ValueProvider<Predicate<T>> {
         val parameters = rhsValue
                 .parameters
-                .map { p -> evaluateRhsStatement<T>(fieldGetterMethodCall, parsedGetterMethod, p) }
+                .map { p -> evaluateRhsStatement<T>(fieldReference, p) }
 
         return if (rhsValue.targetMethod.isStatic) {
             MethodReturnValueProvider(rhsValue.targetMethod, parameters)
@@ -156,43 +159,45 @@ internal class LambdaToExpressionService
         }
     }
 
-    private fun getFieldReferenceFromGetterMethod(fieldGetterMethodCall: MethodCallStatement<*>): Pair<Method, String> {
-        val parsedGetterMethod = methodParser.parseMethod(fieldGetterMethodCall.targetClass, fieldGetterMethodCall.targetMethod)
-        val getterMethodBody = if (parsedGetterMethod.returnStatement is Statement.EvaluableStatement<*>) {
-            methodParser.unravelMethodCallChain(parsedGetterMethod.returnStatement).value
-        } else if (parsedGetterMethod.returnStatement is BranchedStatement) {
-            methodParser.unravelMethodCallChain(handleBranchedStatementAsGetterMethodReturnValue(parsedGetterMethod.returnStatement)).value
-        } else {
-            TODO()
-        }
-
-        val propertyName = when (getterMethodBody) {
-            is GetFieldStatement -> getterMethodBody.fieldName
-            else -> TODO()
-        }
-        return Pair(parsedGetterMethod, propertyName)
+    private fun <T> captureVariableFromMethodCall(rhsValue: Statement.LoadVariable, fieldReference: FieldReference): ValueProvider<Predicate<T>> {
+//        val propertyCallChain = listOf(fieldGetterMethodCall.targetMethod, getMethodOfClass(Object::class.java, "equals", Object::class.java))
+//        return MethodParameterValueProvider(rhsValue.variableIndex, propertyCallChain)
+        val propertyList = propertyService.parsePropertyChainToGetters(fieldReference)
+        // TODO not just equals, but probably all methods of the last property...
+        val lastProperty = propertyList.last()
+        val propertyListWithEquals = propertyList.toMutableList() + getMethodOfClass(lastProperty.returnType, "equals", Object::class.java)
+        return MethodParameterValueProvider(rhsValue.variableIndex, propertyListWithEquals)
     }
 
-    private fun handleBranchedStatementAsGetterMethodReturnValue(returnStatement: BranchedStatement): Statement.EvaluableStatement<*> {
-        val branch01 = returnStatement.branch01
-        val branch02 = returnStatement.branch02
-        return if (branch01.evaluate() == ThrowUninitializedPropertyAccessException || branch02.evaluate() == ThrowUninitializedPropertyAccessException) {
-            (if (branch01.evaluate() == ThrowUninitializedPropertyAccessException) branch02 else branch01) as Statement.EvaluableStatement<*>
-        } else {
-            TODO()
+    private fun <T> getFieldReferenceFromComparedValues(v1: Statement, v2: Statement, entityClazz: Class<T>): Pair<FieldReference, Statement>? {
+        if (v1 is MethodCallStatement<*>) {
+            val fieldRef = getReferencingFieldOfClass(v1, entityClazz)
+            if (fieldRef != null) return Pair(fieldRef, v1)
         }
+        if (v2 is MethodCallStatement<*>) {
+            val fieldRef = getReferencingFieldOfClass(v2, entityClazz)
+            if (fieldRef != null) return Pair(fieldRef, v2)
+        }
+        return null
     }
 
-    private fun <T> captureVariableFromMethodCall(rhsValue: Statement.LoadVariable, fieldGetterMethodCall: MethodCallStatement<*>, parsedGetterMethod: Method): ValueProvider<Predicate<T>> {
-        val propertyCallChain = listOf(fieldGetterMethodCall.targetMethod, getMethodOfClass(parsedGetterMethod.jvmMethod.returnType, "equals", Object::class.java))
-        return MethodParameterValueProvider(rhsValue.variableIndex, propertyCallChain)
-    }
-
-    private fun <T> getFieldReferenceFromComparedValues(v1: Statement, v2: Statement, entityClazz: Class<T>): MethodCallStatement<*>? {
-        return if (v1 is MethodCallStatement<*> && v1.targetClass == entityClazz) {
-            v1
-        } else if (v2 is MethodCallStatement<*> && v2.targetClass == entityClazz) {
-            v2
+    // TODO cleanup this mess
+    private fun <T> getReferencingFieldOfClass(methodCall: MethodCallStatement<*>, entityClazz: Class<T>): FieldReference? {
+        val method = methodCall.value
+        val evaluated = method.returnStatement.deepEvaluate()
+        return if (evaluated is GetFieldStatement && evaluated.javaClass == entityClazz) {
+            // TODO
+            FieldReference(entityClazz, evaluated.fieldName, null)
+        } else if (evaluated is BranchedStatement) {
+            // TODO
+            val withoutLateInit = evaluated.evaluateIfStraightForward().evaluate()
+            if (withoutLateInit is GetFieldStatement) FieldReference(entityClazz, withoutLateInit.fieldName, null) else null
+        // TODO
+        } else if (method.returnStatement is Statement.ReturnStatement<*> && method.returnStatement.value is MethodCallStatement<*> && methodCall.targetMethod.isNonStatic && methodCall.parameters.size == 1 && methodCall.parameters[0].deepEvaluate() is GetFieldStatement) {
+            val field = methodCall.parameters[0].deepEvaluate() as GetFieldStatement
+            FieldReference(field.javaClass, field.fieldName, getReferencingFieldOfClass(method.returnStatement.value, method.returnStatement.value.targetClass))
+        } else if (evaluated is MethodCallStatement<*>) {
+            getReferencingFieldOfClass(evaluated, entityClazz)
         } else {
             null
         }

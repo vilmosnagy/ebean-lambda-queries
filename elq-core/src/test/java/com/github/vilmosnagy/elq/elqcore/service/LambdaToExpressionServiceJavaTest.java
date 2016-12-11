@@ -22,7 +22,6 @@ import java.util.Collections;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -34,7 +33,7 @@ public class LambdaToExpressionServiceJavaTest {
     private MethodParser methodParser;
 
     @Mock
-    private EbeanExpressionBuilder expressionBuilder;
+    private JavaPropertyService javaPropertyService;
 
     @InjectMocks
     private LambdaToExpressionService testObj;
@@ -50,6 +49,9 @@ public class LambdaToExpressionServiceJavaTest {
         Class<TestEntity> entityClass = TestEntity.class;
         java.lang.reflect.Method entityIdGetterMethod = TestEntity.class.getDeclaredMethod("getId");
 
+        Statement getFieldStatement = new GetFieldStatement(TestEntity.class, "id");
+        Statement.EvaluableStatement<?> getterReturnStatement = new Statement.ReturnStatement<>(getFieldStatement);
+
         Statement returnedStatement = new BranchedStatement(
                 new CompareStatement(
                         new Statement.LoadConstant<>(5),
@@ -57,26 +59,23 @@ public class LambdaToExpressionServiceJavaTest {
                                 entityClass,
                                 entityIdGetterMethod,
                                 Collections.singletonList(new Statement.LoadVariable(1)),
-                                java.lang.Integer.TYPE, null
+                                java.lang.Integer.TYPE,
+                                new Method(entityIdGetterMethod, getterReturnStatement)
                         ),
                         CompareType.NOT_EQUALS
                 ),
                 new Statement.ReturnStatement<>(new Statement.LoadConstant<>(true)),
                 new Statement.ReturnStatement<>(new Statement.LoadConstant<>(false))
         );
-        Statement getFieldStatement = new GetFieldStatement(TestEntity.class, "id");
-        Statement.EvaluableStatement<?> getterReturnStatement = new Statement.ReturnStatement<>(getFieldStatement);
 
         Method getterMethod = new Method(entityIdGetterMethod, getterReturnStatement);
         Method parsedMethod = new Method(lambdaMethod, returnedStatement);
 
         when(methodParser.parseMethod(eq(this.getClass()), any())).thenReturn(parsedMethod);
         when(methodParser.parseMethod(entityClass, entityIdGetterMethod)).thenReturn(getterMethod);
-        when(methodParser.unravelMethodCallChain(getterReturnStatement)).thenReturn((Statement.EvaluableStatement) getterReturnStatement);
 
         ParsedFilterLQExpressionLeaf<TestEntity> actual = (ParsedFilterLQExpressionLeaf<TestEntity>) testObj.parseFilterMethod(album -> album.getId() == 5, TestEntity.class);
         assertEquals(new ParsedFilterLQExpressionLeaf<>("id", new ConstantValueProvider<>(5), CompareType.EQUALS), actual);
 
-        verify(methodParser).unravelMethodCallChain(getterReturnStatement);
     }
 }

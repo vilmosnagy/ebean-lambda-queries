@@ -54,19 +54,19 @@ class MethodParserTest : FeatureSpec() {
             }
         }
 
-        feature("Should unravel method call") {
-            scenario("When method call returns an evaluable statement") {
-                val lastMethodCallsValue = Statement.ReturnStatement(Statement.LoadConstant(5))
-                val lastMethodCallStatement = MethodCallStatement(
-                        targetClass = ClassWithSimpleGetter::class.java,
-                        targetMethod = getVariableMethod,
-                        returnType = Any::class.java,
-                        evaluatedStatement = Method(getVariableMethod, lastMethodCallsValue))
-
-                val unraveledStatement = testObj.unravelMethodCallChain(Statement.ReturnStatement(lastMethodCallStatement))
-                unraveledStatement.value shouldBe lastMethodCallsValue
-            }
-        }
+//        feature("Should unravel method call") {
+//            scenario("When method call returns an evaluable statement") {
+//                val lastMethodCallsValue = Statement.ReturnStatement(Statement.LoadConstant(5))
+//                val lastMethodCallStatement = MethodCallStatement(
+//                        targetClass = ClassWithSimpleGetter::class.java,
+//                        targetMethod = getVariableMethod,
+//                        returnType = Any::class.java,
+//                        evaluatedStatement = Method(getVariableMethod, lastMethodCallsValue))
+//
+//                val unraveledStatement = testObj.unravelMethodCallChain(Statement.ReturnStatement(lastMethodCallStatement))
+//                unraveledStatement.value shouldBe lastMethodCallsValue
+//            }
+//        }
     }
 }
 

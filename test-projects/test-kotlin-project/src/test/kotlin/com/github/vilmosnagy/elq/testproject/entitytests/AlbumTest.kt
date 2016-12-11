@@ -1,10 +1,12 @@
-package com.github.vilmosnagy.elq.testproject.entities
+package com.github.vilmosnagy.elq.testproject.entitytests
 
 import com.avaje.ebean.Ebean
 import com.avaje.ebean.Expr
 import com.github.vilmosnagy.elq.elqcore.interfaces.Predicate
 import com.github.vilmosnagy.elq.elqcore.stream.createElqStream
 import com.github.vilmosnagy.elq.testproject.BaseTest
+import com.github.vilmosnagy.elq.testproject.entities.Album
+import com.github.vilmosnagy.elq.testproject.entities.Artist
 import org.junit.Assert.*
 import java.util.stream.Collectors
 
@@ -160,6 +162,14 @@ class AlbumTest : BaseTest() {
                 )).findList()
 
                 val albums = createElqStream(Album::class.java).filter { it.id == 343 || it.title == "Monteverdi: L'Orfeo" }.collect(Collectors.toList())
+                albums shouldBe expectedAlbums
+            }
+        }
+
+        feature("Filtering trough Many-To-One connections should work") {
+            scenario("Filter on ManyToOne's id field") {
+                val expectedAlbums = Ebean.find(Album::class.java).where().eq("artist.id", 1).findList()
+                val albums = createElqStream(Album::class.java).filter { it.artist.id == 1}.collect(Collectors.toList())
                 albums shouldBe expectedAlbums
             }
         }
