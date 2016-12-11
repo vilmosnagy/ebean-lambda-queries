@@ -8,5 +8,6 @@ import java.util.*
 data class TestEntity(
         var id: Int,
         var version: Date,
-        var title: String
+        var title: String,
+        var valid: Boolean
 )

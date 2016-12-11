@@ -3,15 +3,12 @@ package com.github.vilmosnagy.elq.elqcore.service
 import com.github.vilmosnagy.elq.elqcore.model.Method
 import com.github.vilmosnagy.elq.elqcore.model.opcodes.OpCode
 import com.github.vilmosnagy.elq.elqcore.model.opcodes.OpCodeType
-import com.github.vilmosnagy.elq.elqcore.model.statements.MethodCallStatement
-import com.github.vilmosnagy.elq.elqcore.model.statements.Statement
 import com.github.vilmosnagy.elq.elqcore.service.opcode.GeneralOpCodeParser
 import org.apache.bcel.Repository
 import org.apache.bcel.classfile.Code
 import org.apache.bcel.classfile.JavaClass
 import javax.inject.Inject
 import javax.inject.Singleton
-
 import java.lang.reflect.Method as JVMMethod
 
 /**
@@ -48,14 +45,5 @@ internal class MethodParser @Inject constructor(
         }
         return retList
     }
-
-//    // TODO test
-//    fun unravelMethodCallChain(evaluableStatement: Statement.EvaluableStatement<*>): Statement.EvaluableStatement<*> {
-//        var subMethodCallBody = evaluableStatement
-//        while (subMethodCallBody.value is MethodCallStatement<*>) {
-//            subMethodCallBody = (subMethodCallBody.value as MethodCallStatement<*>).value.returnStatement as Statement.EvaluableStatement<*>
-//        }
-//        return subMethodCallBody
-//    }
 
 }

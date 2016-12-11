@@ -8,13 +8,16 @@ data class FieldReference(
         val fieldName: String,
         val nextReference: FieldReference?
 ) {
-    val fullReference: String by lazy { calcFullReference() }
+    val fullReference: String by lazy { calcFullReference(this, StringBuilder()) }
 
-    private fun calcFullReference(): String {
-        return if (nextReference != null) {
-            "$fieldName.${nextReference.fullReference}"
-        } else {
-            return fieldName
+    companion object {
+        private tailrec fun calcFullReference(currentReference: FieldReference, accumulator: StringBuilder): String {
+            return if (currentReference.nextReference == null) {
+                accumulator.append(currentReference.fieldName).toString()
+            } else {
+                accumulator.append(currentReference.fieldName).append('.')
+                calcFullReference(currentReference.nextReference, accumulator)
+            }
         }
     }
 }

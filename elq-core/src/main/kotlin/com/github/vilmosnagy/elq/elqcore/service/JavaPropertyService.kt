@@ -13,7 +13,6 @@ internal class JavaPropertyService
 @Inject constructor() {
 
     fun parsePropertyChainToGetters(fieldReference: FieldReference): List<Method> {
-
         val clazz = fieldReference.parentClazz
         val fieldName = fieldReference.fieldName
         val getterMethodName = "get${capitalizeFirstLetter(fieldName)}"
